@@ -1,0 +1,8 @@
+__pycache__/
+tap_necklace.sqlite3
+_account-check.png
+_account-dashboard.png
+_claim-flow.png
+_tap-check.png
+node_modules/
+*.log
