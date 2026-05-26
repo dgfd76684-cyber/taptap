@@ -1,0 +1,1034 @@
+:root {
+  --bg: #f7f2eb;
+  --bg-2: #fffaf6;
+  --panel: rgba(255, 255, 255, 0.86);
+  --panel-strong: #ffffff;
+  --line: rgba(114, 77, 47, 0.12);
+  --line-strong: rgba(114, 77, 47, 0.2);
+  --text: #221714;
+  --muted: #7c665d;
+  --mint: #44c5b4;
+  --peach: #ff9c80;
+  --gold: #f4d16b;
+  --green: #43d56c;
+  --yellow: #ffe763;
+  --black: #171313;
+  --shadow: 0 24px 60px rgba(142, 101, 63, 0.12);
+  color-scheme: light;
+  font-family:
+    "Avenir Next", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  background:
+    radial-gradient(circle at top left, rgba(255, 204, 186, 0.85), transparent 28rem),
+    radial-gradient(circle at top right, rgba(187, 239, 231, 0.7), transparent 30rem),
+    linear-gradient(180deg, #f9f6f0, #f5efe7 72%);
+  color: var(--text);
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+a {
+  color: inherit;
+}
+
+.shell {
+  width: min(1180px, calc(100% - 28px));
+  margin: 0 auto;
+  padding: 18px 0 42px;
+}
+
+.topbar,
+.top-actions,
+.hero-actions,
+.bind-view,
+.editor-head,
+.form-actions,
+.wechat-line,
+.dialog-head,
+.dialog-actions,
+.owner-tools,
+.cover-topline {
+  display: flex;
+}
+
+.topbar {
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+}
+
+.brand-mark {
+  display: grid;
+  width: 48px;
+  height: 48px;
+  place-items: center;
+  border-radius: 15px;
+  background: linear-gradient(135deg, #ff9681, #5dd9c6);
+  color: #fffaf6;
+  font-weight: 900;
+  box-shadow: 0 16px 28px rgba(255, 140, 114, 0.24);
+}
+
+.brand-copy strong,
+.brand-copy small {
+  display: block;
+}
+
+.brand-copy small {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.top-actions {
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.top-actions a,
+.quiet-button,
+.quiet-link {
+  min-height: 44px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.72);
+  color: var(--text);
+  cursor: pointer;
+  padding: 0 16px;
+  text-decoration: none;
+  box-shadow: 0 10px 18px rgba(108, 72, 47, 0.06);
+}
+
+.top-actions a,
+.quiet-link {
+  display: inline-flex;
+  align-items: center;
+}
+
+.view[hidden],
+form[hidden] {
+  display: none;
+}
+
+.eyebrow {
+  margin: 0 0 10px;
+  color: #34b7a4;
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+h1,
+h2,
+p {
+  margin-top: 0;
+}
+
+h1 {
+  margin-bottom: 14px;
+  font-size: clamp(2.1rem, 4vw, 4.4rem);
+  line-height: 0.97;
+}
+
+.home-view,
+.bind-view,
+.account-view,
+.editor-view,
+.profile-card,
+.auth-panel,
+.token-card,
+.bind-summary,
+.profile-form {
+  border: 1px solid var(--line);
+  border-radius: 28px;
+  background: var(--panel);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(16px);
+}
+
+.home-view {
+  display: grid;
+  min-height: 720px;
+  grid-template-columns: minmax(320px, 0.92fr) minmax(360px, 1.08fr);
+  align-items: center;
+  gap: clamp(24px, 5vw, 56px);
+  padding: clamp(22px, 4vw, 44px);
+}
+
+.phone-stage {
+  display: grid;
+  place-items: center;
+}
+
+.mock-phone {
+  position: relative;
+  width: min(100%, 420px);
+  border-radius: 34px;
+  background: linear-gradient(180deg, #b7d0f0, #fae4e8 36%, #fff9f2);
+  padding: 24px 16px 18px;
+  box-shadow: 0 26px 56px rgba(113, 82, 62, 0.18);
+}
+
+.phone-search {
+  width: 100%;
+  min-height: 54px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.55);
+  color: rgba(23, 19, 19, 0.52);
+  display: flex;
+  align-items: center;
+  padding: 0 18px;
+  font-size: 1.05rem;
+}
+
+.phone-card {
+  margin-top: 20px;
+  border-radius: 30px;
+  background: rgba(255, 255, 255, 0.68);
+  padding: 28px 18px 22px;
+  text-align: center;
+}
+
+.profile-chip {
+  display: inline-flex;
+  min-height: 28px;
+  align-items: center;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #f9d26a, #ffbb57);
+  padding: 0 14px;
+  color: rgba(78, 46, 11, 0.84);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.phone-avatar-ring {
+  width: 132px;
+  height: 132px;
+  margin: 16px auto 12px;
+  padding: 5px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ffffff, rgba(255, 255, 255, 0.18));
+}
+
+.phone-avatar-ring img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.phone-card h2 {
+  margin-bottom: 18px;
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  line-height: 1;
+}
+
+.phone-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.phone-app {
+  display: grid;
+  min-height: 112px;
+  align-items: end;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.68);
+  color: var(--muted);
+  font-size: 0.92rem;
+  font-weight: 600;
+  padding: 12px;
+  position: relative;
+}
+
+.phone-app::before {
+  content: "";
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  width: 58px;
+  height: 58px;
+  border-radius: 18px;
+  transform: translateX(-50%);
+}
+
+.phone-app.ig::before {
+  background: linear-gradient(135deg, #ff6f72, #8348ff);
+}
+
+.phone-app.contact::before {
+  background: linear-gradient(135deg, #d7d2ce, #9ca0a6);
+}
+
+.phone-app.snap::before {
+  background: #ffe654;
+}
+
+.phone-app.wechat::before {
+  background: linear-gradient(135deg, #4ade68, #25b94a);
+}
+
+.phone-app.douyin::before {
+  background: linear-gradient(135deg, #16141b, #f54270);
+}
+
+.home-copy > p:last-of-type,
+.bind-copy > p,
+.account-copy > p:last-of-type,
+.bind-summary p,
+.bio,
+.status-line {
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.hero-actions {
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.primary-link,
+.primary-button {
+  display: inline-flex;
+  min-height: 50px;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #ff947f, #ffcf7d);
+  color: #4a2415;
+  cursor: pointer;
+  font-weight: 800;
+  padding: 0 20px;
+  text-decoration: none;
+  box-shadow: 0 18px 28px rgba(255, 149, 127, 0.22);
+}
+
+.token-showcase,
+.nfc-badge {
+  display: inline-grid;
+  gap: 6px;
+  margin-top: 20px;
+  padding: 16px 18px;
+  border: 1px solid rgba(68, 197, 180, 0.18);
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.token-showcase span,
+.nfc-badge span,
+.token-card span,
+.wechat-line span,
+.cover-token-label {
+  color: var(--muted);
+  font-size: 0.84rem;
+}
+
+.token-showcase strong,
+.nfc-badge strong,
+.token-card strong {
+  font-size: clamp(1.25rem, 2vw, 1.9rem);
+}
+
+.token-showcase small,
+.token-card small {
+  color: var(--muted);
+}
+
+.token-showcase.inline {
+  margin-top: 18px;
+}
+
+.token-showcase.compact {
+  margin-top: 24px;
+}
+
+.bind-view,
+.account-view {
+  align-items: center;
+  justify-content: space-between;
+  gap: clamp(24px, 5vw, 72px);
+  min-height: 700px;
+  padding: clamp(22px, 5vw, 60px);
+}
+
+.bind-view {
+  background:
+    radial-gradient(circle at top left, rgba(255, 203, 167, 0.52), transparent 24rem),
+    radial-gradient(circle at bottom right, rgba(116, 221, 203, 0.38), transparent 26rem),
+    var(--panel);
+}
+
+.account-view {
+  grid-template-columns: minmax(300px, 1fr) minmax(320px, 430px);
+  background:
+    radial-gradient(circle at top right, rgba(244, 209, 107, 0.45), transparent 24rem),
+    radial-gradient(circle at bottom left, rgba(255, 166, 143, 0.32), transparent 24rem),
+    var(--panel);
+}
+
+.bind-copy,
+.account-copy {
+  max-width: 520px;
+}
+
+.token-card {
+  display: inline-grid;
+  gap: 8px;
+  min-width: min(100%, 340px);
+  margin-top: 18px;
+  padding: 18px 20px;
+}
+
+.token-card-accent {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.82), rgba(255, 241, 231, 0.92));
+}
+
+.token-card.mini {
+  min-width: 0;
+  margin-top: 18px;
+}
+
+.auth-panel {
+  width: min(100%, 440px);
+  padding: 24px;
+}
+
+.segmented {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 4px;
+  margin: 18px 0;
+  padding: 4px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.62);
+}
+
+.segmented button {
+  min-height: 48px;
+  border: 0;
+  border-radius: 14px;
+  color: var(--muted);
+  background: transparent;
+  cursor: pointer;
+}
+
+.segmented button.is-active {
+  color: var(--text);
+  background: rgba(255, 242, 233, 0.92);
+  box-shadow: 0 10px 18px rgba(108, 72, 47, 0.08);
+}
+
+.stack-form,
+.profile-form {
+  display: grid;
+  gap: 14px;
+}
+
+.avatar-upload {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.84);
+  padding: 18px;
+}
+
+.avatar-upload-copy span,
+.avatar-upload-copy strong,
+.avatar-upload-copy small {
+  display: block;
+}
+
+.avatar-upload-copy span {
+  color: var(--muted);
+  font-size: 0.84rem;
+}
+
+.avatar-upload-copy strong {
+  margin: 6px 0 8px;
+  font-size: 1.16rem;
+}
+
+.avatar-upload-copy small {
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.avatar-upload-side {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+}
+
+.editor-avatar-preview {
+  width: 92px;
+  height: 92px;
+  border: 4px solid rgba(255, 255, 255, 0.95);
+  border-radius: 50%;
+  object-fit: cover;
+  background: #fff;
+  box-shadow: 0 12px 24px rgba(120, 88, 67, 0.14);
+}
+
+.upload-button {
+  position: relative;
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.95);
+  color: var(--text);
+  cursor: pointer;
+  padding: 0 16px;
+}
+
+.upload-button input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+label {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+input,
+textarea {
+  width: 100%;
+  border: 1px solid var(--line-strong);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--text);
+  outline: none;
+}
+
+input {
+  min-height: 50px;
+  padding: 0 14px;
+}
+
+input[type="file"] {
+  padding: 12px 14px;
+}
+
+textarea {
+  min-height: 110px;
+  padding: 14px;
+  resize: vertical;
+}
+
+input:focus,
+textarea:focus {
+  border-color: rgba(68, 197, 180, 0.55);
+  box-shadow: 0 0 0 4px rgba(68, 197, 180, 0.12);
+}
+
+.status-line {
+  min-height: 1.4em;
+  margin: 12px 0 0;
+}
+
+.editor-view {
+  padding: clamp(20px, 4vw, 40px);
+}
+
+.editor-head {
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 24px;
+}
+
+.editor-links {
+  display: grid;
+  justify-items: end;
+  gap: 10px;
+}
+
+.editor-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.24fr) minmax(280px, 0.76fr);
+  gap: 18px;
+}
+
+.profile-form {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  padding: clamp(18px, 3vw, 30px);
+}
+
+.full {
+  grid-column: 1 / -1;
+}
+
+.form-actions {
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.bind-summary {
+  align-self: start;
+  min-height: 320px;
+  padding: 24px;
+}
+
+.bind-summary h2 {
+  margin-bottom: 12px;
+  font-size: clamp(1.45rem, 2vw, 2rem);
+}
+
+.dashboard-view {
+  padding: clamp(20px, 4vw, 40px);
+}
+
+.dashboard-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 18px;
+}
+
+.dashboard-meta {
+  display: grid;
+  gap: 10px;
+  min-width: 220px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.76);
+  box-shadow: 0 12px 22px rgba(108, 72, 47, 0.06);
+  text-align: right;
+}
+
+.dashboard-meta span {
+  color: var(--muted);
+}
+
+.dashboard-meta strong {
+  font-size: 1.2rem;
+}
+
+.device-list {
+  display: grid;
+  gap: 14px;
+}
+
+.device-card {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.84);
+  padding: 18px;
+  box-shadow: var(--shadow);
+}
+
+.device-avatar {
+  width: 88px;
+  height: 88px;
+  flex: none;
+  border: 4px solid rgba(255, 255, 255, 0.95);
+  border-radius: 24px;
+  object-fit: cover;
+  background: #fff;
+}
+
+.device-meta {
+  display: grid;
+  gap: 8px;
+  width: 100%;
+}
+
+.device-meta h2 {
+  margin: 0;
+  font-size: 1.35rem;
+}
+
+.device-token,
+.device-status {
+  color: var(--muted);
+}
+
+.device-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.empty-state {
+  padding: 22px;
+  border: 1px dashed var(--line-strong);
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.7);
+  color: var(--muted);
+}
+
+.public-view {
+  display: grid;
+  place-items: center;
+  min-height: calc(100vh - 120px);
+}
+
+.owner-tools {
+  width: min(100%, 430px);
+  justify-content: flex-end;
+  margin-bottom: 12px;
+}
+
+.profile-card {
+  width: min(100%, 430px);
+  background: rgba(255, 252, 248, 0.92);
+}
+
+.profile-cover {
+  position: relative;
+  min-height: 210px;
+  padding: 18px;
+  background:
+    radial-gradient(circle at top left, rgba(255, 173, 140, 0.88), transparent 18rem),
+    radial-gradient(circle at bottom right, rgba(71, 205, 193, 0.72), transparent 20rem),
+    linear-gradient(135deg, #ffd9cb, #c6f0eb 72%);
+}
+
+.cover-topline {
+  align-items: center;
+  gap: 10px;
+}
+
+.cover-topline strong {
+  font-size: 1.2rem;
+}
+
+.cover-status {
+  position: absolute;
+  right: 18px;
+  bottom: 18px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.82);
+  padding: 8px 12px;
+  font-size: 0.88rem;
+}
+
+.profile-main {
+  padding: 0 20px 22px;
+  text-align: center;
+}
+
+.avatar {
+  display: block;
+  width: 126px;
+  height: 126px;
+  margin: -64px auto 14px;
+  border: 5px solid rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  object-fit: cover;
+  background: #fff;
+  box-shadow: 0 14px 30px rgba(120, 88, 67, 0.15);
+}
+
+.profile-main h1 {
+  margin-bottom: 10px;
+  font-size: clamp(2.1rem, 4vw, 3.4rem);
+  line-height: 1;
+}
+
+.public-id-line {
+  margin-bottom: 12px;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.tag-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.tag-row span {
+  border: 1px solid rgba(68, 197, 180, 0.2);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 8px 12px;
+  color: #4a403c;
+  font-size: 0.9rem;
+}
+
+.app-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.app-tile {
+  display: grid;
+  min-height: 176px;
+  place-items: center;
+  gap: 8px;
+  border: 0;
+  border-radius: 24px;
+  padding: 18px 10px;
+  color: inherit;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+.app-tile strong,
+.app-tile small,
+.wechat-line strong {
+  display: block;
+}
+
+.app-tile small {
+  color: rgba(34, 23, 20, 0.62);
+}
+
+.wechat-tile {
+  background: linear-gradient(180deg, #6bf188, #37c95f);
+  color: #12311b;
+}
+
+.douyin-tile {
+  background: linear-gradient(180deg, #26212b, #ff5f83);
+  color: #fff7fa;
+}
+
+.douyin-tile small {
+  color: rgba(255, 247, 250, 0.76);
+}
+
+.douyin-tile span {
+  display: grid;
+  width: 84px;
+  height: 84px;
+  place-items: center;
+  border-radius: 24px;
+  background: rgba(0, 0, 0, 0.76);
+  color: #fff;
+  font-weight: 900;
+}
+
+.app-tile.is-disabled {
+  opacity: 0.48;
+  pointer-events: none;
+}
+
+.wechat-mark {
+  position: relative;
+  width: 98px;
+  height: 80px;
+}
+
+.wechat-mark b,
+.wechat-mark i {
+  position: absolute;
+  display: block;
+  border-radius: 50%;
+  background: #fff;
+}
+
+.wechat-mark b {
+  top: 6px;
+  left: 0;
+  width: 62px;
+  height: 48px;
+}
+
+.wechat-mark i {
+  right: 0;
+  bottom: 10px;
+  width: 52px;
+  height: 42px;
+}
+
+.wechat-line {
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 14px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 16px 18px;
+}
+
+.wechat-dialog {
+  width: min(calc(100% - 24px), 430px);
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 28px;
+  background: rgba(255, 252, 248, 0.98);
+  color: var(--text);
+  box-shadow: var(--shadow);
+}
+
+.wechat-dialog::backdrop {
+  background: rgba(34, 23, 20, 0.18);
+}
+
+.dialog-head {
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 22px 22px 14px;
+}
+
+.dialog-head h2 {
+  margin-bottom: 0;
+}
+
+.qr-stage {
+  display: grid;
+  width: calc(100% - 44px);
+  min-height: 336px;
+  margin: 0 auto;
+  place-items: center;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.78);
+}
+
+.qr-stage img {
+  display: block;
+  width: min(100%, 330px);
+  max-height: 440px;
+  object-fit: contain;
+}
+
+.qr-stage img[hidden],
+.qr-empty[hidden] {
+  display: none;
+}
+
+.qr-empty {
+  max-width: 260px;
+  color: var(--muted);
+  padding: 24px;
+  text-align: center;
+  line-height: 1.65;
+}
+
+.qr-empty strong {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--text);
+}
+
+.dialog-actions {
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 22px 22px;
+}
+
+.dialog-actions .status-line {
+  margin: 0;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.44;
+}
+
+@media (max-width: 760px) {
+  .shell {
+    width: min(100% - 18px, 640px);
+    padding-top: 12px;
+  }
+
+  .topbar,
+  .bind-view,
+  .editor-head,
+  .dashboard-head,
+  .dialog-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .home-view,
+  .account-view,
+  .editor-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .home-view,
+  .bind-view,
+  .account-view {
+    min-height: 0;
+    padding: 18px;
+  }
+
+  .phone-grid,
+  .app-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .profile-form {
+    grid-template-columns: 1fr;
+  }
+
+  .avatar-upload {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .device-card {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .dashboard-meta,
+  .editor-links {
+    justify-items: start;
+    text-align: left;
+  }
+
+  .full {
+    grid-column: auto;
+  }
+}
