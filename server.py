@@ -16,14 +16,23 @@ from urllib.parse import unquote, urlparse
 
 
 ROOT = Path(__file__).resolve().parent
-DB_PATH = ROOT / "tap_necklace.sqlite3"
+DEFAULT_DB_PATH = ROOT / "tap_necklace.sqlite3"
 SESSION_COOKIE = "tap_session"
 DEMO_TOKEN = "bekfe"
 DEMO_QR = "/assets/wechat-friend-qr.jpg"
 
 
+def db_path() -> Path:
+    configured = os.environ.get("DATABASE_PATH")
+    if configured:
+        return Path(configured).expanduser()
+    return DEFAULT_DB_PATH
+
+
 def connect() -> sqlite3.Connection:
-    connection = sqlite3.connect(DB_PATH)
+    path = db_path()
+    path.parent.mkdir(parents=True, exist_ok=True)
+    connection = sqlite3.connect(path)
     connection.row_factory = sqlite3.Row
     connection.execute("PRAGMA foreign_keys = ON")
     return connection
