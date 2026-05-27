@@ -8,3 +8,9 @@ services:
     envVars:
       - key: PYTHON_VERSION
         value: 3.12.8
+      - key: DATABASE_PATH
+        value: /var/data/tap_necklace.sqlite3
+    disk:
+      name: tap-necklace-data
+      mountPath: /var/data
+      sizeGB: 1

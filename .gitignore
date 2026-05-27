@@ -6,3 +6,4 @@ _claim-flow.png
 _tap-check.png
 node_modules/
 *.log
+.tools/

@@ -6,10 +6,10 @@
     <title>NEXTOUCH - NFC Social Profile</title>
     <link rel="stylesheet" href="/styles.css" />
   </head>
-  <body>
+  <body data-ready="0">
     <div class="shell">
       <header class="topbar">
-        <a class="brand" href="/" aria-label="NEXTOUCH 首页">
+        <a class="brand" href="/account" aria-label="NEXTOUCH 首页">
           <span class="brand-mark">N</span>
           <span class="brand-copy">
             <strong>NEXTOUCH</strong>
@@ -17,98 +17,92 @@
           </span>
         </a>
         <nav class="top-actions">
-          <a href="/tap/bekfe">模拟碰项链</a>
           <a id="account-link" href="/account">登录 / 管理后台</a>
-          <button id="logout-button" class="quiet-button" type="button" hidden>退出登录</button>
+          <button id="logout-button" class="quiet-button" type="button" hidden>退出</button>
         </nav>
       </header>
 
+      <section id="loading-view" class="loading-view" aria-live="polite">
+        <div class="loading-mark">N</div>
+        <p class="eyebrow">NEXTOUCH / TAP TO CONNECT</p>
+        <h1>正在读取你的 NFC 入口。</h1>
+        <p>请稍等，系统正在加载对应的项链页面。</p>
+      </section>
+
       <main>
-        <section id="home-view" class="home-view view">
-          <div class="home-copy">
-            <p class="eyebrow">Brand Preview</p>
-            <h1>把 NFC 项链，做成一张能被碰开的潮流名片。</h1>
-            <p>
-              NEXTOUCH 的每一条项链都带着唯一编号。第一次碰到时先认领，
-              之后就会变成个人主页、微信好友码、抖音链接和更多社交入口的统一入口。
+        <section id="account-view" class="account-view view" hidden>
+          <div class="scene-copy">
+            <p class="eyebrow">NEXTOUCH / NFC SOCIAL PROFILE</p>
+            <h1>把每条项链，做成一张可以被碰开的潮流名片。</h1>
+            <p class="scene-lead">
+              第一屏是认领，第二屏是公开主页，第三屏是编辑后台。每一条项链都有自己的
+              NFC 独立代码，碰一下就进入你的网站。
             </p>
-            <div class="hero-actions">
-              <a class="primary-link" href="/tap/bekfe">打开演示项链</a>
-              <a class="ghost-link" href="/account">登录管理后台</a>
-            </div>
-            <div class="token-showcase">
-              <span>Demo NFC ID</span>
-              <strong>bekfe</strong>
-              <small>公开入口固定为 `/tap/bekfe`</small>
-            </div>
-          </div>
 
-          <div class="home-gallery" aria-hidden="true">
-            <article class="mini-phone">
-              <div class="mini-phone-top">
-                <span>1</span>
-                <small>首次碰到</small>
-              </div>
-              <div class="mini-phone-body">
-                <strong>认领项链</strong>
-                <p>先登录，再绑定这条专属设备。</p>
-              </div>
-            </article>
-            <article class="mini-phone is-center">
-              <div class="mini-phone-top">
-                <span>2</span>
-                <small>公开主页</small>
-              </div>
-              <div class="mini-phone-body">
-                <strong>社交名片</strong>
-                <p>微信、抖音和头像一次统一管理。</p>
-              </div>
-            </article>
-            <article class="mini-phone">
-              <div class="mini-phone-top">
-                <span>3</span>
-                <small>编辑后台</small>
-              </div>
-              <div class="mini-phone-body">
-                <strong>随时更新</strong>
-                <p>换头像、换微信号，后台直接改。</p>
-              </div>
-            </article>
-          </div>
-        </section>
+            <div class="showcase-grid" aria-hidden="true">
+              <article class="mini-phone preview-claim">
+                <div class="mini-phone-top">
+                  <span>01</span>
+                  <small>First Tap</small>
+                </div>
+                <div class="mini-phone-body">
+                  <strong>认领项链</strong>
+                  <p>先登录，再把这条项链绑定到你的账号。</p>
+                  <div class="mini-chip-row">
+                    <span>NFC ID</span>
+                    <strong>YOUR ID</strong>
+                  </div>
+                </div>
+              </article>
 
-        <section id="bind-view" class="bind-view view" hidden>
-          <div class="bind-copy">
-            <p class="eyebrow">First Tap</p>
-            <h1>这条项链还没有被认领。</h1>
-            <p>
-              你现在碰到的是这条项链自己的 NFC 入口。注册并认领后，
-              它就会变成你专属的公开主页入口。
-            </p>
-            <div class="token-card token-card-accent">
-              <span>你的 NFC 专属 ID</span>
-              <strong id="necklace-token">bekfe</strong>
-              <small id="necklace-path">/tap/bekfe</small>
-            </div>
-            <div class="flow-pill-row">
-              <span>碰一下</span>
-              <span>注册 / 登录</span>
-              <span>认领设备</span>
-              <span>公开主页</span>
+              <article class="mini-phone preview-profile is-center">
+                <div class="mini-phone-top">
+                  <span>02</span>
+                  <small>Public Page</small>
+                </div>
+                <div class="mini-phone-body profile-sample">
+                  <div class="sample-avatar"></div>
+                  <strong>NEXTOUCH</strong>
+                  <p>@nextouch_official</p>
+                  <div class="sample-socials">
+                    <span>微信</span>
+                    <span>抖音</span>
+                    <span>IG</span>
+                  </div>
+                </div>
+              </article>
+
+              <article class="mini-phone preview-editor">
+                <div class="mini-phone-top">
+                  <span>03</span>
+                  <small>Edit Screen</small>
+                </div>
+                <div class="mini-phone-body">
+                  <strong>编辑主页</strong>
+                  <p>上传头像、微信好友码、抖音链接，随时更新。</p>
+                  <div class="editor-mini-list">
+                    <span>头像</span>
+                    <span>微信</span>
+                    <span>抖音</span>
+                  </div>
+                </div>
+              </article>
             </div>
           </div>
 
           <article class="auth-panel">
-            <div class="nfc-badge">
-              <span>NFC ID</span>
-              <strong id="bind-token-copy">bekfe</strong>
-            </div>
-            <div class="segmented" aria-label="注册登录切换">
-              <button id="register-tab" class="is-active" type="button">注册并认领</button>
-              <button id="login-tab" type="button">已有账号</button>
+            <div class="brand-note">
+              <span>手机优先</span>
+              <strong>登录后进入设备后台</strong>
+              <small>你的项链碰一下后会直接进入对应入口，不会先看到旧演示页。</small>
             </div>
 
-            <form id="register-form" class="stack-form">
+            <div class="segmented" aria-label="注册登录切换">
+              <button id="account-register-tab" class="is-active" type="button">注册并认领</button>
+              <button id="account-login-tab" type="button">已有账号</button>
+            </div>
+
+            <form id="account-register-form" class="stack-form">
               <label>
                 昵称
                 <input name="name" required maxlength="28" placeholder="你的主页名称" />
@@ -124,76 +118,53 @@
               <button class="primary-button" type="submit">创建账号并认领</button>
             </form>
 
-            <form id="login-form" class="stack-form" hidden>
+            <form id="account-login-form" class="stack-form" hidden>
               <label>
                 邮箱
-                <input name="email" type="email" required />
+                <input name="email" type="email" required placeholder="you@example.com" />
               </label>
               <label>
                 密码
-                <input name="password" type="password" required />
+                <input name="password" type="password" required placeholder="请输入密码" />
               </label>
-              <button class="primary-button" type="submit">登录并认领</button>
+              <button class="primary-button" type="submit">进入我的设备</button>
             </form>
 
-            <p id="auth-status" class="status-line"></p>
+            <p id="account-auth-status" class="status-line"></p>
           </article>
         </section>
 
-        <section id="account-view" class="account-view view" hidden>
-          <div class="account-copy">
-            <p class="eyebrow">Backend Login</p>
-            <h1>登录你的后台，管理自己的设备和主页。</h1>
-            <p>
-              这里不是公开主页。登录之后，你才能看到“我的设备”、修改头像、
-              微信好友码、抖音链接，以及其他展示内容。
+        <section id="bind-view" class="bind-view view" hidden>
+          <div class="bind-copy">
+            <p class="eyebrow">FIRST TAP</p>
+            <h1>这条项链还没有被认领。</h1>
+            <p class="scene-lead">
+              你现在看到的是这条 NFC 项链自己的入口。注册并认领后，它就会变成你的公开主页入口。
             </p>
-            <div class="token-showcase compact">
-              <span>当前演示设备</span>
-              <strong>bekfe</strong>
-              <small>登录后进入后台管理，不会改写 NFC 芯片本身。</small>
+            <div class="token-card token-card-accent">
+              <span>你的 NFC 专属 ID</span>
+              <strong id="necklace-token">123</strong>
+              <small id="necklace-path">/tap/123</small>
             </div>
-            <div class="flow-grid">
-              <article>
-                <span>1</span>
-                <strong>认领项链</strong>
-                <small>先让设备归属到你的账号。</small>
-              </article>
-              <article>
-                <span>2</span>
-                <strong>编辑主页</strong>
-                <small>头像、简介、微信和抖音都在这里改。</small>
-              </article>
-              <article>
-                <span>3</span>
-                <strong>保持一致</strong>
-                <small>别人再碰时，看到的就是最新内容。</small>
-              </article>
+            <div class="flow-pill-row">
+              <span>碰一下</span>
+              <span>注册 / 登录</span>
+              <span>认领设备</span>
+              <span>公开主页</span>
             </div>
           </div>
 
           <article class="auth-panel">
-            <p class="eyebrow">Returning User</p>
-            <h2>登录后台</h2>
-            <form id="account-login-form" class="stack-form">
-              <label>
-                邮箱
-                <input name="email" type="email" required />
-              </label>
-              <label>
-                密码
-                <input name="password" type="password" required />
-              </label>
-              <button class="primary-button" type="submit">进入我的设备</button>
-            </form>
-            <p id="account-status" class="status-line"></p>
+            <div class="nfc-badge">
+              <span>NFC ID</span>
+              <strong id="bind-token-copy">123</strong>
+            </div>
+            <div class="segmented" aria-label="认领方式切换">
+              <button id="bind-register-tab" class="is-active" type="button">注册并认领</button>
+              <button id="bind-login-tab" type="button">已有账号</button>
+            </div>
 
-            <div class="auth-divider"></div>
-
-            <p class="eyebrow">New User</p>
-            <h2>先创建账号</h2>
-            <p class="auth-note">没有账号也没关系，先在这里创建，后面再认领设备。</p>
-            <form id="account-register-form" class="stack-form">
+            <form id="bind-register-form" class="stack-form">
               <label>
                 昵称
                 <input name="name" required maxlength="28" placeholder="你的主页名称" />
@@ -206,18 +177,31 @@
                 密码
                 <input name="password" type="password" required minlength="6" placeholder="至少 6 位" />
               </label>
-              <button class="primary-button" type="submit">创建账号</button>
+              <button class="primary-button" type="submit">创建账号并认领项链</button>
             </form>
-            <p class="status-line">创建完后，你就可以进入后台，再去认领或编辑自己的设备。</p>
+
+            <form id="bind-login-form" class="stack-form" hidden>
+              <label>
+                邮箱
+                <input name="email" type="email" required placeholder="you@example.com" />
+              </label>
+              <label>
+                密码
+                <input name="password" type="password" required placeholder="请输入密码" />
+              </label>
+              <button class="primary-button" type="submit">登录并认领这条项链</button>
+            </form>
+
+            <p id="bind-auth-status" class="status-line"></p>
           </article>
         </section>
 
         <section id="dashboard-view" class="dashboard-view view" hidden>
           <div class="dashboard-head">
             <div>
-              <p class="eyebrow">My Devices</p>
+              <p class="eyebrow">MY DEVICES</p>
               <h1>我的设备</h1>
-              <p>这里列出你名下的每一条 NFC 项链。点进去就能编辑这台设备的公开主页。</p>
+              <p>这里列出你名下的每一条 NFC 项链。点击设备，就进入该设备的编辑页。</p>
             </div>
             <div class="dashboard-meta">
               <span id="dashboard-email"></span>
@@ -233,17 +217,17 @@
         <section id="editor-view" class="editor-view view" hidden>
           <div class="editor-head">
             <div>
-              <p class="eyebrow">Device Editor</p>
-              <h1>编辑这台设备碰出来的主页。</h1>
+              <p class="eyebrow">EDIT PROFILE</p>
+              <h1>编辑这台设备的主页。</h1>
               <div class="token-showcase inline">
                 <span>NFC ID</span>
-                <strong id="editor-token">bekfe</strong>
-                <small id="editor-token-path">/tap/bekfe</small>
+                <strong id="editor-token">123</strong>
+                <small id="editor-token-path">/tap/123</small>
               </div>
             </div>
             <div class="editor-links">
               <a id="back-to-dashboard" class="quiet-link" href="/account">返回我的设备</a>
-              <a id="public-profile-link" class="quiet-link" href="/tap/bekfe">查看公开页</a>
+              <a id="public-profile-link" class="quiet-link" href="/tap/123">查看公开页</a>
             </div>
           </div>
 
@@ -253,7 +237,7 @@
                 <div class="avatar-upload-copy">
                   <span>头像</span>
                   <strong>上传一张头像</strong>
-                  <small>普通用户只需要点击上传，不用接触任何图片链接。</small>
+                  <small>普通用户只需要点一下上传，不用接触任何图片链接。</small>
                 </div>
                 <div class="avatar-upload-side">
                   <img id="editor-avatar-preview" class="editor-avatar-preview" alt="头像预览" />
@@ -285,14 +269,14 @@
               </label>
               <label class="full">
                 微信好友码图片 URL
-                <input name="wechatQr" placeholder="https://... 或下方上传图片" />
+                <input name="wechatQr" placeholder="https://... 或下面上传图片" />
               </label>
               <label class="full">
                 上传微信好友码
                 <input name="wechatQrFile" type="file" accept="image/*" />
               </label>
               <div class="form-actions full">
-                <button class="primary-button" type="submit">保存主页</button>
+                <button class="primary-button" type="submit">保存设备主页</button>
                 <button id="copy-public-url" class="quiet-button" type="button">复制公开链接</button>
               </div>
               <p id="editor-status" class="status-line full"></p>
@@ -300,13 +284,13 @@
 
             <aside class="bind-summary">
               <p class="eyebrow">Bound</p>
-              <h2>这条设备已经绑定到你的账号。</h2>
-              <p>别人再碰 `<span id="summary-token">bekfe</span>` 时，看到的就是你刚保存的公开主页。</p>
+              <h2>这条设备已绑定到你的账号。</h2>
+              <p>别人再碰 `<span id="summary-token">123</span>`，看到的就是你刚保存的公开主页内容。</p>
               <div class="token-card mini">
-                <span>公开后缀</span>
-                <strong id="summary-token-copy">bekfe</strong>
+                <span>NFC 后缀</span>
+                <strong id="summary-token-copy">123</strong>
               </div>
-              <a id="bound-tap-link" class="primary-link" href="/tap/bekfe">再碰一次看看效果</a>
+              <a id="bound-tap-link" class="primary-link" href="/tap/123">再碰一次看看效果</a>
             </aside>
           </div>
         </section>
@@ -316,9 +300,9 @@
             <div class="profile-cover">
               <div class="cover-topline">
                 <span class="cover-token-label">NFC ID</span>
-                <strong id="public-token">bekfe</strong>
+                <strong id="public-token">123</strong>
               </div>
-              <span class="cover-status">NFC 已认证</span>
+              <span class="cover-status">Tap Connected</span>
             </div>
             <div class="profile-main">
               <img id="public-avatar" class="avatar" alt="头像" />
@@ -327,7 +311,18 @@
               <p id="public-bio" class="bio"></p>
               <div id="public-tags" class="tag-row"></div>
 
-              <div id="public-platform-list" class="platform-list"></div>
+              <div class="app-grid">
+                <button id="public-wechat" class="app-tile wechat-tile" type="button">
+                  <span class="wechat-mark"><b></b><i></i></span>
+                  <strong>微信</strong>
+                  <small>好友码</small>
+                </button>
+                <a id="public-douyin" class="app-tile douyin-tile" target="_blank" rel="noreferrer">
+                  <span>DY</span>
+                  <strong>抖音</strong>
+                  <small>打开主页</small>
+                </a>
+              </div>
 
               <div class="wechat-line">
                 <div>
@@ -354,7 +349,7 @@
         <img id="wechat-qr-image" alt="微信好友码" />
         <div id="wechat-qr-empty" class="qr-empty">
           <strong>还没有好友码</strong>
-          <p>上传微信好友码图片后，这里会显示给访客长按保存。</p>
+          <p>保存微信好友码图片后，这里会显示给访客长按保存。</p>
         </div>
       </div>
       <div class="dialog-actions">

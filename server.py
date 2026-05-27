@@ -16,14 +16,23 @@ from urllib.parse import unquote, urlparse
 
 
 ROOT = Path(__file__).resolve().parent
-DB_PATH = ROOT / "tap_necklace.sqlite3"
+DEFAULT_DB_PATH = ROOT / "tap_necklace.sqlite3"
 SESSION_COOKIE = "tap_session"
 DEMO_TOKEN = "bekfe"
 DEMO_QR = "/assets/wechat-friend-qr.jpg"
 
 
+def db_path() -> Path:
+    configured = os.environ.get("DATABASE_PATH")
+    if configured:
+        return Path(configured).expanduser()
+    return DEFAULT_DB_PATH
+
+
 def connect() -> sqlite3.Connection:
-    connection = sqlite3.connect(DB_PATH)
+    path = db_path()
+    path.parent.mkdir(parents=True, exist_ok=True)
+    connection = sqlite3.connect(path)
     connection.row_factory = sqlite3.Row
     connection.execute("PRAGMA foreign_keys = ON")
     return connection
@@ -290,15 +299,17 @@ class TapHandler(BaseHTTPRequestHandler):
         password = str(data.get("password", ""))
         name = str(data.get("name", "")).strip()[:28]
         token = str(data.get("token", "")).strip()
-        if "@" not in email or len(password) < 6 or not name or not token:
-            self.send_json({"error": "请填写昵称、邮箱、至少 6 位密码，并从项链入口进入。"}, HTTPStatus.BAD_REQUEST)
+        if "@" not in email or len(password) < 6 or not name:
+            self.send_json({"error": "请填写昵称、邮箱和至少 6 位密码。"}, HTTPStatus.BAD_REQUEST)
             return
 
         with connect() as connection:
-            necklace = connection.execute("SELECT * FROM necklaces WHERE token = ?", (token,)).fetchone()
-            if necklace is None or necklace["owner_id"]:
-                self.send_json({"error": "这条项链已经绑定，或演示入口无效。"}, HTTPStatus.CONFLICT)
-                return
+            necklace = None
+            if token:
+                necklace = connection.execute("SELECT * FROM necklaces WHERE token = ?", (token,)).fetchone()
+                if necklace is None or necklace["owner_id"]:
+                    self.send_json({"error": "这条项链已经绑定，或者演示入口无效。"}, HTTPStatus.CONFLICT)
+                    return
             try:
                 cursor = connection.execute(
                     "INSERT INTO users(email, password_hash, created_at) VALUES (?, ?, ?)",
@@ -318,15 +329,16 @@ class TapHandler(BaseHTTPRequestHandler):
                     user_id,
                     slug,
                     name,
-                    "把微信好友码和抖音主页放进这张碰一碰名片。",
+                    "把微信好友码和抖音主页放进这张碰一下就能打开的名片里。",
                     json.dumps(["新绑定", "可编辑"]),
                     DEMO_QR,
                 ),
             )
-            connection.execute(
-                "UPDATE necklaces SET owner_id = ?, bound_at = ? WHERE token = ?",
-                (user_id, now(), token),
-            )
+            if token:
+                connection.execute(
+                    "UPDATE necklaces SET owner_id = ?, bound_at = ? WHERE token = ?",
+                    (user_id, now(), token),
+                )
             session = self.new_session(connection, user_id)
         self.send_json({"me": self.user_payload(user_id, email)}, HTTPStatus.CREATED, self.cookie_header(session))
 

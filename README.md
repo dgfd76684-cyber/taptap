@@ -43,17 +43,18 @@ The demo page has a reset button that releases `bekfe` so the first-bind flow ca
 - GitHub Pages can host the static front end, but it cannot run `server.py`.
 - This project needs a public backend for login, claim, and profile saving.
 - For a real custom domain like `taptap.xin`, deploy the backend to a public host first, then point DNS to that host.
-- `server.py` now reads `HOST` and `PORT` from environment variables, so it can bind to `0.0.0.0` on a server.
+- `server.py` reads `HOST`, `PORT`, and `DATABASE_PATH` from environment variables, so it can bind to `0.0.0.0` and keep SQLite on a mounted disk in production.
 
 ### Recommended deployment path
 
 1. Push this folder to a GitHub repository.
 2. Create a Render Web Service from that repo.
 3. Use `render.yaml` or set the start command to `python server.py`.
-4. After Render gives you a public URL, add a CNAME record in Aliyun DNS:
+4. In Render, mount a persistent disk at `/var/data` so `DATABASE_PATH=/var/data/tap_necklace.sqlite3` survives restarts.
+5. After Render gives you a public URL, add a CNAME record in Aliyun DNS:
    - host: `@` or `www` depending on the domain setup
    - value: the Render hostname
-5. If you want `taptap.xin` to open the site directly, configure the root domain in Render and follow the DNS instructions it shows.
+6. If you want `taptap.xin` to open the site directly, configure the root domain in Render and follow the DNS instructions it shows.
 
 ## Product direction
 
