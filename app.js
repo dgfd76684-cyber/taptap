@@ -1,4 +1,4 @@
-const views = {
+﻿const views = {
   loading: document.querySelector("#loading-view"),
   account: document.querySelector("#account-view"),
   bind: document.querySelector("#bind-view"),
@@ -28,18 +28,61 @@ const profileForm = document.querySelector("#profile-form");
 const deviceList = document.querySelector("#device-list");
 const dashboardEmpty = document.querySelector("#dashboard-empty");
 const wechatDialog = document.querySelector("#wechat-dialog");
+const publicPlatformsRoot = document.querySelector("#public-platforms");
 const fallbackAvatar =
   "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=520&q=80";
 const DEFAULT_TOKEN = "123";
 
 const SOCIAL_PLATFORM_META = [
-  { key: "wechat", label: "微信 / WeChat", subtitle: "好友码已上传", accent: "wechat", short: "W" },
-  { key: "douyin", label: "抖音 / Douyin", subtitle: "点击直达主页", accent: "douyin", short: "D" },
-  { key: "instagram", label: "Instagram", subtitle: "即将支持", accent: "instagram", short: "IG" },
-  { key: "xiaohongshu", label: "小红书 / Xiaohongshu", subtitle: "即将支持", accent: "xiaohongshu", short: "R" },
-  { key: "x", label: "Twitter / X", subtitle: "即将支持", accent: "x", short: "X" },
-  { key: "youtube", label: "YouTube", subtitle: "即将支持", accent: "youtube", short: "YT" },
+  { key: "wechat", label: "微信 / WeChat", subtitle: "好友码已上传", accent: "wechat" },
+  { key: "douyin", label: "抖音 / Douyin", subtitle: "点击直达主页", accent: "douyin" },
+  { key: "instagram", label: "Instagram", subtitle: "即将支持", accent: "instagram" },
+  { key: "xiaohongshu", label: "小红书 / Xiaohongshu", subtitle: "即将支持", accent: "xiaohongshu" },
+  { key: "x", label: "Twitter / X", subtitle: "即将支持", accent: "x" },
+  { key: "youtube", label: "YouTube", subtitle: "即将支持", accent: "youtube" },
 ];
+
+const PLATFORM_ICON_MARKUP = {
+  wechat: `
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path d="M7.1 4.4c-3.2 0-5.8 2.2-5.8 5 0 1.6.8 3 2.1 4l-.8 2.4 2.5-1.2c.6.1 1.2.2 1.9.2 3.2 0 5.8-2.2 5.8-5s-2.6-5-5.7-5Z"/>
+      <path d="M16.8 8c-2.7 0-4.9 1.8-4.9 4 0 1 .4 1.8 1.1 2.5l-.4 1.4 1.6-.8c.4.1.8.1 1.2.1 2.7 0 4.9-1.8 4.9-4s-2.2-4-4.9-4Z"/>
+      <circle cx="6.1" cy="9.3" r=".8"/>
+      <circle cx="9.5" cy="9.3" r=".8"/>
+      <circle cx="15.9" cy="12" r=".7"/>
+      <circle cx="18.5" cy="12" r=".7"/>
+    </svg>
+  `,
+  douyin: `
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path d="M14.1 3.8v7.1a4.1 4.1 0 1 1-3-1.2V6.4c1.1 0 2.2.3 3 .7V3.8Z"/>
+      <path d="M10 16.4a1.9 1.9 0 1 0 0-3.8 1.9 1.9 0 0 0 0 3.8Zm4.7-1.2c1.8 0 3.5 1.1 4.1 2.7.2.5-.1 1-.6 1.2-.5.2-1.1-.1-1.3-.6-.3-.8-1.2-1.4-2.2-1.4-.9 0-1.8.5-2.1 1.2-.2.5-.8.8-1.3.6-.5-.2-.8-.8-.5-1.3.7-1.5 2.3-2.4 3.9-2.4Z"/>
+    </svg>
+  `,
+  instagram: `
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <rect x="3.6" y="3.6" width="16.8" height="16.8" rx="5.2" ry="5.2" fill="none" stroke="currentColor" stroke-width="2"/>
+      <circle cx="12" cy="12" r="4.1" fill="none" stroke="currentColor" stroke-width="2"/>
+      <circle cx="17.6" cy="6.8" r="1.2"/>
+    </svg>
+  `,
+  xiaohongshu: `
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <rect x="3.4" y="3.4" width="17.2" height="17.2" rx="5.2" ry="5.2"/>
+      <text x="12" y="15.3" text-anchor="middle" fill="#fff" font-size="8.2" font-weight="800" font-family="PingFang SC, sans-serif">小</text>
+    </svg>
+  `,
+  x: `
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path d="M5 5.4h3.5l4 5.3 4.1-5.3H20l-6.2 7.8L20 18.6h-3.4l-4.4-5.8-4.4 5.8H4l6.4-8.1L5 5.4Z"/>
+    </svg>
+  `,
+  youtube: `
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path d="M10.2 9.3v5.4l4.8-2.7-4.8-2.7Z" fill="#fff"/>
+    </svg>
+  `,
+};
 
 const state = {
   token: tokenFromPath(),
@@ -48,7 +91,6 @@ const state = {
   publicProfile: null,
 };
 
-show("loading");
 wireAuthScope("account");
 wireAuthScope("bind");
 
@@ -56,7 +98,6 @@ document.querySelector("#logout-button").addEventListener("click", logout);
 document.querySelector("#close-wechat").addEventListener("click", () => wechatDialog.close());
 document.querySelector("#copy-wechat").addEventListener("click", () => copyWechat(state.publicProfile));
 document.querySelector("#dialog-copy-wechat").addEventListener("click", () => copyWechat(state.publicProfile));
-document.querySelector("#public-wechat").addEventListener("click", () => openWechat(state.publicProfile));
 document.querySelector("#copy-public-url").addEventListener("click", copyPublicUrl);
 profileForm.addEventListener("submit", saveProfile);
 profileForm.elements.namedItem("avatarFile").addEventListener("change", loadAvatarFile);
@@ -111,92 +152,83 @@ function wireAuthScope(scope) {
 }
 
 async function boot() {
-  show("loading");
-  const meResult = await api("/api/me");
-  state.me = meResult.me || null;
-  updateSessionUi();
-
-  if (state.token) {
-    await loadTap(state.token);
-    return;
-  }
-
+  const tapToken = tokenFromPath();
   const slug = profileSlugFromPath();
-  if (slug) {
-    await loadPublicProfile(slug);
-    return;
-  }
 
-  if (window.location.pathname === "/" || window.location.pathname.startsWith("/account")) {
-    if (!state.me) {
+  if (tapToken || slug) {
+    show("loading");
+    if (tapToken) {
+      document.querySelector("#necklace-token").textContent = tapToken;
+      document.querySelector("#bind-token-copy").textContent = tapToken;
+      document.querySelector("#necklace-path").textContent = `/tap/${tapToken}`;
+    }
+
+    const [meResult, routeResult] = await Promise.all([
+      api("/api/me"),
+      tapToken
+        ? api(`/api/tap/${encodeURIComponent(tapToken)}`)
+        : api(`/api/profile/${encodeURIComponent(slug)}`),
+    ]);
+
+    state.me = meResult.me || null;
+    updateSessionUi();
+
+    if (!routeResult.ok) {
       history.replaceState({}, "", "/account");
       setAuthMode("account", "register");
       show("account");
       return;
     }
 
-    const deviceToken = selectedDeviceToken();
-    if (deviceToken && ownsDevice(deviceToken)) {
-      state.selectedDevice = deviceToken;
-      history.replaceState({}, "", `/account?device=${encodeURIComponent(deviceToken)}`);
-      hydrateEditor(profileForSelectedDevice());
-      show("editor");
+    if (tapToken) {
+      if (routeResult.bound && routeResult.profile) {
+        state.publicProfile = routeResult.profile;
+        renderPublic(routeResult.profile, tapToken);
+        show("public");
+        return;
+      }
+
+      setAuthMode("bind", state.me ? "login" : "register");
+      setStatus(
+        "#bind-auth-status",
+        state.me
+          ? "你已经登录，提交后会把这条项链认领到当前账号。"
+          : "先注册或登录，再认领这条项链。",
+      );
+      show("bind");
       return;
     }
 
-    history.replaceState({}, "", "/account");
-    renderDashboard();
-    show("dashboard");
-    return;
-  }
-
-  history.replaceState({}, "", "/account");
-  setAuthMode("account", "register");
-  show("account");
-}
-
-async function loadTap(token) {
-  document.querySelector("#necklace-token").textContent = token;
-  document.querySelector("#bind-token-copy").textContent = token;
-  document.querySelector("#necklace-path").textContent = `/tap/${token}`;
-
-  const result = await api(`/api/tap/${encodeURIComponent(token)}`);
-  if (!result.ok) {
-    history.replaceState({}, "", "/account");
-    setAuthMode("account", "register");
-    show("account");
-    return;
-  }
-
-  state.me = result.me || state.me;
-  updateSessionUi();
-
-  if (result.bound && result.profile) {
-    state.publicProfile = result.profile;
-    renderPublic(result.profile, token);
+    state.publicProfile = routeResult.profile;
+    renderPublic(routeResult.profile, "");
     show("public");
     return;
   }
 
-  setAuthMode("bind", state.me ? "login" : "register");
-  setStatus(
-    "#bind-auth-status",
-    state.me ? "你已经登录，提交后会把这条项链认领到当前账号。" : "先注册或登录，再认领这条项链。"
-  );
-  show("bind");
-}
+  show("account");
+  setAuthMode("account", "register");
+  const meResult = await api("/api/me");
+  state.me = meResult.me || null;
+  updateSessionUi();
 
-async function loadPublicProfile(slug) {
-  const result = await api(`/api/profile/${encodeURIComponent(slug)}`);
-  if (!result.ok) {
+  const path = window.location.pathname;
+  if (!(path === "/" || path.startsWith("/account"))) {
     history.replaceState({}, "", "/account");
-    setAuthMode("account", "register");
-    show("account");
+  }
+  if (!state.me) return;
+
+  const deviceToken = selectedDeviceToken();
+  if (deviceToken && ownsDevice(deviceToken)) {
+    state.selectedDevice = deviceToken;
+    history.replaceState({}, "", `/account?device=${encodeURIComponent(deviceToken)}`);
+    hydrateEditor(profileForSelectedDevice());
+    show("editor");
     return;
   }
-  state.publicProfile = result.profile;
-  renderPublic(result.profile, "");
-  show("public");
+
+  history.replaceState({}, "", "/account");
+  renderDashboard();
+  show("dashboard");
 }
 
 function show(name) {
@@ -204,6 +236,7 @@ function show(name) {
     if (!view) return;
     view.hidden = key !== name;
   });
+  document.documentElement.dataset.loading = name === "loading" ? "1" : "0";
   document.body.dataset.ready = name === "loading" ? "0" : "1";
   document.body.dataset.view = name;
   if (name === "editor" && profileForSelectedDevice()) {
@@ -267,7 +300,7 @@ function renderDashboard() {
     const editButton = document.createElement("button");
     editButton.className = "primary-button";
     editButton.type = "button";
-    editButton.textContent = "编辑这台设备";
+    editButton.textContent = "编辑主页";
     editButton.addEventListener("click", () => openDeviceEditor(device.token));
 
     const viewLink = document.createElement("a");
@@ -337,7 +370,7 @@ async function saveProfile(event) {
   updateSessionUi();
   hydrateEditor(result.me.profile);
   renderDashboard();
-  setStatus("#editor-status", "设备主页已保存。再碰一次，就会看到最新内容。");
+  setStatus("#editor-status", "主页已保存。别人再碰这条项链，会看到最新内容。");
 }
 
 function readProfileForm() {
@@ -347,7 +380,7 @@ function readProfileForm() {
     avatar: profileForm.dataset.avatar || "",
     bio: profileForm.elements.bio.value.trim(),
     tags: profileForm.elements.tags.value
-      .split(/[,，]/)
+       .split(/[,，]/)
       .map((tag) => tag.trim())
       .filter(Boolean),
     wechat: profileForm.elements.wechat.value.trim(),
@@ -358,10 +391,10 @@ function readProfileForm() {
 
 function renderPublic(profile, token = "") {
   const displayToken = token || state.me?.necklaceToken || state.token || DEFAULT_TOKEN;
-  document.querySelector("#public-handle").textContent = `网站后缀 /tap/${displayToken}`;
-  document.querySelector("#public-name").textContent = profile.name || "未命名主页";
-  document.querySelector("#public-bio").textContent = profile.bio || "这个主页还在编辑中。";
-  document.querySelector("#public-wechat-id").textContent = profile.wechat || "还未填写";
+  document.querySelector("#public-handle").textContent = `@${profile.slug || "nextouch_official"}`;
+  document.querySelector("#public-name").textContent = profile.name || "NEXTOUCH";
+  document.querySelector("#public-bio").textContent = profile.bio || "Be real. Connect real.";
+  document.querySelector("#public-wechat-id").textContent = profile.wechat || "未填写";
   document.querySelector("#public-token").textContent = displayToken;
 
   const avatar = document.querySelector("#public-avatar");
@@ -378,21 +411,71 @@ function renderPublic(profile, token = "") {
     tagsRoot.append(chip);
   });
 
-  const douyin = document.querySelector("#public-douyin");
-  douyin.href = profile.douyin || "#";
-  douyin.classList.toggle("is-disabled", !profile.douyin);
-  douyin.setAttribute("aria-disabled", String(!profile.douyin));
-  douyin.tabIndex = profile.douyin ? 0 : -1;
-}
+  if (publicPlatformsRoot) {
+    publicPlatformsRoot.replaceChildren();
 
+    for (const meta of SOCIAL_PLATFORM_META) {
+      const hasWechat = Boolean(profile.wechat || profile.wechatQr);
+      const hasDouyin = Boolean(profile.douyin);
+      const isWechat = meta.key === "wechat";
+      const isDouyin = meta.key === "douyin";
+      const active = (isWechat && hasWechat) || (isDouyin && hasDouyin);
+
+      const row = document.createElement(active ? "button" : "div");
+      row.className = `platform-row ${meta.key}${active ? " is-active" : " is-disabled"}`;
+      if (active && row.tagName === "BUTTON") row.type = "button";
+
+      const icon = document.createElement("span");
+      icon.className = "platform-icon";
+      icon.innerHTML = PLATFORM_ICON_MARKUP[meta.key] || PLATFORM_ICON_MARKUP.wechat;
+
+      const metaWrap = document.createElement("span");
+      metaWrap.className = "platform-meta";
+      const title = document.createElement("strong");
+      title.textContent = meta.label;
+      const subtitle = document.createElement("span");
+      if (isWechat) {
+        subtitle.textContent = hasWechat ? "好友码 / 可复制微信号" : "等待完善";
+      } else if (isDouyin) {
+        subtitle.textContent = hasDouyin ? "点击直达抖音主页" : "等待完善";
+      } else {
+        subtitle.textContent = meta.subtitle;
+      }
+      metaWrap.append(title, subtitle);
+
+      const chevron = document.createElement("span");
+      chevron.className = "platform-chevron";
+      chevron.textContent = active ? "›" : "·";
+
+      row.append(icon, metaWrap, chevron);
+
+      if (isWechat) {
+        row.addEventListener("click", () => openWechat(profile));
+      }
+
+      if (isDouyin && hasDouyin) {
+        const link = document.createElement("a");
+        link.className = row.className;
+        link.href = profile.douyin;
+        link.target = "_blank";
+        link.rel = "noreferrer";
+        link.append(icon, metaWrap, chevron);
+        publicPlatformsRoot.append(link);
+        continue;
+      }
+
+      publicPlatformsRoot.append(row);
+    }
+  }
+}
 function openWechat(profile) {
   if (!profile) return;
   state.publicProfile = profile;
   document.querySelector("#wechat-dialog-title").textContent = `${profile.name || "Ta"} 的微信好友码`;
   document.querySelector("#dialog-copy-wechat").disabled = !profile.wechat;
   document.querySelector("#wechat-dialog-hint").textContent = profile.wechatQr
-    ? "长按好友码保存，再去微信扫一扫添加。"
-    : "这个主页还没有保存微信好友码图片。";
+    ? "长按好友码图片保存，再去微信扫一扫添加。"
+    : "这条主页还没有保存微信好友码图片。";
 
   const image = document.querySelector("#wechat-qr-image");
   const empty = document.querySelector("#wechat-qr-empty");
@@ -520,7 +603,7 @@ async function copyText(text, message) {
     const target = wechatDialog.open ? "#wechat-dialog-hint" : "#editor-status";
     setStatus(target, message);
   } catch {
-    setStatus("#editor-status", "浏览器不允许复制，请手动选择文本。");
+    setStatus("#editor-status", "复制失败，请手动选择文本。");
   }
 }
 
@@ -557,3 +640,10 @@ function setStatus(selector, message) {
   const target = document.querySelector(selector);
   if (target) target.textContent = message || "";
 }
+
+
+
+
+
+
+

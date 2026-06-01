@@ -4,13 +4,21 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>NEXTOUCH - NFC Social Profile</title>
+    <script>
+      (() => {
+        const isTapRoute = /^\/tap\/[^/]+$/.test(location.pathname);
+        document.documentElement.dataset.loading = isTapRoute ? "1" : "0";
+      })();
+    </script>
     <link rel="stylesheet" href="/styles.css" />
   </head>
-  <body data-ready="0">
+  <body data-ready="1">
     <div class="shell">
       <header class="topbar">
         <a class="brand" href="/account" aria-label="NEXTOUCH 首页">
-          <span class="brand-mark">N</span>
+          <span class="brand-mark">
+            <img src="/assets/nextouch-emblem.svg" alt="" aria-hidden="true" />
+          </span>
           <span class="brand-copy">
             <strong>NEXTOUCH</strong>
             <small>TAP TO CONNECT</small>
@@ -23,10 +31,12 @@
       </header>
 
       <section id="loading-view" class="loading-view" aria-live="polite">
-        <div class="loading-mark">N</div>
+        <div class="loading-mark">
+          <img src="/assets/nextouch-emblem.svg" alt="" aria-hidden="true" />
+        </div>
         <p class="eyebrow">NEXTOUCH / TAP TO CONNECT</p>
-        <h1>正在读取你的 NFC 入口。</h1>
-        <p>请稍等，系统正在加载对应的项链页面。</p>
+        <h1>正在打开 NEXTOUCH。</h1>
+        <p>请稍等，系统正在连接对应的页面。</p>
       </section>
 
       <main>
@@ -35,15 +45,14 @@
             <p class="eyebrow">NEXTOUCH / NFC SOCIAL PROFILE</p>
             <h1>把每条项链，做成一张可以被碰开的潮流名片。</h1>
             <p class="scene-lead">
-              第一屏是认领，第二屏是公开主页，第三屏是编辑后台。每一条项链都有自己的
-              NFC 独立代码，碰一下就进入你的网站。
+              先登录，再认领你的项链。后面你可以随时更换头像、微信和抖音，不需要重新写 NFC。
             </p>
 
             <div class="showcase-grid" aria-hidden="true">
               <article class="mini-phone preview-claim">
                 <div class="mini-phone-top">
                   <span>01</span>
-                  <small>First Tap</small>
+                  <small>首次碰触</small>
                 </div>
                 <div class="mini-phone-body">
                   <strong>认领项链</strong>
@@ -58,7 +67,7 @@
               <article class="mini-phone preview-profile is-center">
                 <div class="mini-phone-top">
                   <span>02</span>
-                  <small>Public Page</small>
+                  <small>公开主页</small>
                 </div>
                 <div class="mini-phone-body profile-sample">
                   <div class="sample-avatar"></div>
@@ -75,7 +84,7 @@
               <article class="mini-phone preview-editor">
                 <div class="mini-phone-top">
                   <span>03</span>
-                  <small>Edit Screen</small>
+                  <small>编辑主页</small>
                 </div>
                 <div class="mini-phone-body">
                   <strong>编辑主页</strong>
@@ -93,8 +102,8 @@
           <article class="auth-panel">
             <div class="brand-note">
               <span>手机优先</span>
-              <strong>登录后进入设备后台</strong>
-              <small>你的项链碰一下后会直接进入对应入口，不会先看到旧演示页。</small>
+              <strong>先登录，再认领设备</strong>
+              <small>你看到的页面就是这条项链的入口，不会先闪旧演示页。</small>
             </div>
 
             <div class="segmented" aria-label="注册登录切换">
@@ -137,9 +146,9 @@
         <section id="bind-view" class="bind-view view" hidden>
           <div class="bind-copy">
             <p class="eyebrow">FIRST TAP</p>
-            <h1>这条项链还没有被认领。</h1>
+            <h1>这条NEXTOUCH还未被认领</h1>
             <p class="scene-lead">
-              你现在看到的是这条 NFC 项链自己的入口。注册并认领后，它就会变成你的公开主页入口。
+              你现在看到的是这条 NFC 项链自己的入口。注册并认领后，它就会变成你公开主页的入口。
             </p>
             <div class="token-card token-card-accent">
               <span>你的 NFC 专属 ID</span>
@@ -201,7 +210,7 @@
             <div>
               <p class="eyebrow">MY DEVICES</p>
               <h1>我的设备</h1>
-              <p>这里列出你名下的每一条 NFC 项链。点击设备，就进入该设备的编辑页。</p>
+              <p>这里列出你名下的每一条 NFC 项链。点开设备，就进入这个设备的编辑页。</p>
             </div>
             <div class="dashboard-meta">
               <span id="dashboard-email"></span>
@@ -218,7 +227,7 @@
           <div class="editor-head">
             <div>
               <p class="eyebrow">EDIT PROFILE</p>
-              <h1>编辑这台设备的主页。</h1>
+              <h1>编辑主页</h1>
               <div class="token-showcase inline">
                 <span>NFC ID</span>
                 <strong id="editor-token">123</strong>
@@ -236,8 +245,8 @@
               <div class="avatar-upload full">
                 <div class="avatar-upload-copy">
                   <span>头像</span>
-                  <strong>上传一张头像</strong>
-                  <small>普通用户只需要点一下上传，不用接触任何图片链接。</small>
+                  <strong>点击更换头像</strong>
+                  <small>普通用户只需要点一下上传，不用碰任何图片链接。</small>
                 </div>
                 <div class="avatar-upload-side">
                   <img id="editor-avatar-preview" class="editor-avatar-preview" alt="头像预览" />
@@ -247,50 +256,58 @@
                   </label>
                 </div>
               </div>
+
               <label>
                 昵称
                 <input name="name" required maxlength="28" />
               </label>
-              <label class="full">
-                简介
+
+              <label>
+                个人签名
                 <textarea name="bio" rows="3" maxlength="120"></textarea>
               </label>
+
               <label class="full">
                 标签
                 <input name="tags" placeholder="设计, 摄影, 创业" />
               </label>
+
               <label>
                 微信号
-                <input name="wechat" maxlength="48" placeholder="用于一键复制" />
+                <input name="wechat" maxlength="48" placeholder="用于复制和好友码关联" />
               </label>
+
               <label>
                 抖音主页链接
                 <input name="douyin" placeholder="https://www.douyin.com/..." />
               </label>
+
               <label class="full">
                 微信好友码图片 URL
                 <input name="wechatQr" placeholder="https://... 或下面上传图片" />
               </label>
+
               <label class="full">
                 上传微信好友码
                 <input name="wechatQrFile" type="file" accept="image/*" />
               </label>
+
               <div class="form-actions full">
-                <button class="primary-button" type="submit">保存设备主页</button>
+                <button class="primary-button" type="submit">保存主页</button>
                 <button id="copy-public-url" class="quiet-button" type="button">复制公开链接</button>
               </div>
               <p id="editor-status" class="status-line full"></p>
             </form>
 
             <aside class="bind-summary">
-              <p class="eyebrow">Bound</p>
-              <h2>这条设备已绑定到你的账号。</h2>
+              <p class="eyebrow">BOUND</p>
+              <h2>这台设备已经绑定到你的账号。</h2>
               <p>别人再碰 `<span id="summary-token">123</span>`，看到的就是你刚保存的公开主页内容。</p>
               <div class="token-card mini">
                 <span>NFC 后缀</span>
                 <strong id="summary-token-copy">123</strong>
               </div>
-              <a id="bound-tap-link" class="primary-link" href="/tap/123">再碰一次看看效果</a>
+              <a id="bound-tap-link" class="primary-link" href="/tap/123">再碰一次看效果</a>
             </aside>
           </div>
         </section>
@@ -302,26 +319,20 @@
                 <span class="cover-token-label">NFC ID</span>
                 <strong id="public-token">123</strong>
               </div>
-              <span class="cover-status">Tap Connected</span>
+              <span class="cover-status">NFC 已认证</span>
             </div>
             <div class="profile-main">
               <img id="public-avatar" class="avatar" alt="头像" />
               <h1 id="public-name"></h1>
               <p id="public-handle" class="public-id-line"></p>
               <p id="public-bio" class="bio"></p>
+              <div class="nfc-status-chip">NFC 已认证</div>
               <div id="public-tags" class="tag-row"></div>
 
-              <div class="app-grid">
-                <button id="public-wechat" class="app-tile wechat-tile" type="button">
-                  <span class="wechat-mark"><b></b><i></i></span>
-                  <strong>微信</strong>
-                  <small>好友码</small>
-                </button>
-                <a id="public-douyin" class="app-tile douyin-tile" target="_blank" rel="noreferrer">
-                  <span>DY</span>
-                  <strong>抖音</strong>
-                  <small>打开主页</small>
-                </a>
+              <div id="public-platforms" class="platform-list"></div>
+              <div class="profile-plaque">
+                <strong>NEXTOUCH</strong>
+                <small>TAP TO CONNECT</small>
               </div>
 
               <div class="wechat-line">
