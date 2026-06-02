@@ -1,36 +1,75 @@
 :root {
-  --bg: #f7f2eb;
-  --bg-2: #fffaf6;
-  --panel: rgba(255, 255, 255, 0.86);
-  --panel-strong: #ffffff;
-  --line: rgba(114, 77, 47, 0.12);
-  --line-strong: rgba(114, 77, 47, 0.2);
-  --text: #221714;
-  --muted: #7c665d;
-  --mint: #44c5b4;
-  --peach: #ff9c80;
-  --gold: #f4d16b;
-  --green: #43d56c;
-  --yellow: #ffe763;
-  --black: #171313;
-  --shadow: 0 24px 60px rgba(142, 101, 63, 0.12);
-  color-scheme: light;
-  font-family:
-    "Avenir Next", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  --bg: #030303;
+  --bg-soft: #090909;
+  --panel: rgba(255, 255, 255, 0.04);
+  --panel-2: rgba(255, 255, 255, 0.065);
+  --line: rgba(255, 255, 255, 0.12);
+  --line-2: rgba(255, 255, 255, 0.2);
+  --text: #f5f4f0;
+  --muted: #a6a5a0;
+  --muted-2: #7f7d77;
+  --accent: #e5d3a5;
+  --accent-2: #d8d6d2;
+  --cyan: #8ef0e4;
+  --shadow: 0 28px 72px rgba(0, 0, 0, 0.44);
+  color-scheme: dark;
+  font-family: "Avenir Next", "SF Pro Display", "PingFang SC", "Hiragino Sans GB", sans-serif;
 }
 
 * {
   box-sizing: border-box;
 }
 
+html,
+body {
+  min-width: 320px;
+}
+
 body {
   margin: 0;
-  min-width: 320px;
-  background:
-    radial-gradient(circle at top left, rgba(255, 204, 186, 0.85), transparent 28rem),
-    radial-gradient(circle at top right, rgba(187, 239, 231, 0.7), transparent 30rem),
-    linear-gradient(180deg, #f9f6f0, #f5efe7 72%);
   color: var(--text);
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.66), rgba(0, 0, 0, 0.88)),
+    url("/assets/nextouch-marble-user.png") center/cover fixed,
+    #030303;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.012) 1px, transparent 1px) 0 0 / 90px 90px,
+    linear-gradient(rgba(255, 255, 255, 0.01) 1px, transparent 1px) 0 0 / 90px 90px;
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.96), transparent 96%);
+  opacity: 0.08;
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: -12%;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 20% 22%, rgba(255, 255, 255, 0.03), transparent 26%),
+    radial-gradient(circle at 78% 34%, rgba(255, 255, 255, 0.02), transparent 24%),
+    radial-gradient(circle at 50% 80%, rgba(255, 255, 255, 0.014), transparent 20%);
+  filter: blur(18px);
+  opacity: 0.08;
+  mix-blend-mode: screen;
+}
+
+html[data-loading="1"] main {
+  visibility: hidden;
+}
+
+html[data-loading="1"] #loading-view {
+  display: grid;
+}
+
+html[data-loading="0"] #loading-view {
+  display: none;
 }
 
 button,
@@ -48,23 +87,25 @@ a {
   color: inherit;
 }
 
+button {
+  border: 0;
+}
+
 .shell {
-  width: min(1180px, calc(100% - 28px));
+  width: min(1280px, calc(100% - 24px));
   margin: 0 auto;
-  padding: 18px 0 42px;
+  padding: 18px 0 40px;
 }
 
 .topbar,
 .top-actions,
-.hero-actions,
-.bind-view,
+.scene-copy,
 .editor-head,
-.form-actions,
-.wechat-line,
+.dashboard-head,
 .dialog-head,
 .dialog-actions,
-.owner-tools,
-.cover-topline {
+.wechat-line,
+.form-actions {
   display: flex;
 }
 
@@ -87,11 +128,16 @@ a {
   width: 48px;
   height: 48px;
   place-items: center;
-  border-radius: 15px;
-  background: linear-gradient(135deg, #ff9681, #5dd9c6);
-  color: #fffaf6;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 16px;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.02)),
+    linear-gradient(135deg, #131313, #080808);
+  color: var(--accent-2);
+  font-size: 1.05rem;
   font-weight: 900;
-  box-shadow: 0 16px 28px rgba(255, 140, 114, 0.24);
+  letter-spacing: 0.04em;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
 }
 
 .brand-copy strong,
@@ -99,9 +145,15 @@ a {
   display: block;
 }
 
+.brand-copy strong {
+  font-size: 1.02rem;
+  letter-spacing: 0.08em;
+}
+
 .brand-copy small {
   color: var(--muted);
-  font-size: 0.85rem;
+  font-size: 0.78rem;
+  letter-spacing: 0.2em;
 }
 
 .top-actions {
@@ -115,13 +167,17 @@ a {
 .quiet-link {
   min-height: 44px;
   border: 1px solid var(--line);
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.72);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.03);
   color: var(--text);
   cursor: pointer;
   padding: 0 16px;
   text-decoration: none;
-  box-shadow: 0 10px 18px rgba(108, 72, 47, 0.06);
+  transition:
+    transform 160ms ease,
+    border-color 160ms ease,
+    background 160ms ease,
+    box-shadow 160ms ease;
 }
 
 .top-actions a,
@@ -130,17 +186,74 @@ a {
   align-items: center;
 }
 
+.top-actions a:hover,
+.quiet-button:hover,
+.quiet-link:hover,
+.primary-button:hover,
+.primary-link:hover,
+.upload-button:hover,
+.segment button:hover,
+.platform-row:hover {
+  transform: translateY(-1px);
+}
+
 .view[hidden],
 form[hidden] {
   display: none;
 }
 
+.loading-view {
+  display: grid;
+  place-items: center;
+  min-height: calc(100vh - 120px);
+  margin: 14px 0 22px;
+  padding: 32px 20px;
+  border: 1px solid var(--line);
+  border-radius: 30px;
+  background:
+    radial-gradient(circle at 50% 26%, rgba(255, 255, 255, 0.08), transparent 34%),
+    linear-gradient(135deg, rgba(255, 236, 188, 0.12), rgba(175, 233, 226, 0.1) 52%, rgba(255, 255, 255, 0.04)),
+    rgba(10, 10, 10, 0.96);
+  text-align: center;
+  box-shadow: var(--shadow);
+}
+
+.loading-view h1 {
+  max-width: 12ch;
+  margin-bottom: 12px;
+  font-size: clamp(2rem, 4vw, 4rem);
+}
+
+.loading-view p:last-of-type {
+  max-width: 42ch;
+  margin-bottom: 0;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.loading-mark {
+  display: grid;
+  width: 70px;
+  height: 70px;
+  place-items: center;
+  margin-bottom: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 22px;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.02)),
+    linear-gradient(135deg, #141414, #090909);
+  color: var(--accent-2);
+  font-size: 1.45rem;
+  font-weight: 900;
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.35);
+}
+
 .eyebrow {
   margin: 0 0 10px;
-  color: #34b7a4;
-  font-size: 0.82rem;
+  color: var(--cyan);
+  font-size: 0.78rem;
   font-weight: 800;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.24em;
   text-transform: uppercase;
 }
 
@@ -151,276 +264,206 @@ p {
 }
 
 h1 {
-  margin-bottom: 14px;
-  font-size: clamp(2.1rem, 4vw, 4.4rem);
-  line-height: 0.97;
+  margin-bottom: 16px;
+  font-size: clamp(2.2rem, 4vw, 4.8rem);
+  line-height: 0.95;
+  letter-spacing: -0.02em;
 }
 
-.home-view,
-.bind-view,
+h2 {
+  margin-bottom: 12px;
+  font-size: clamp(1.35rem, 2.4vw, 2rem);
+  line-height: 1.04;
+}
+
 .account-view,
+.bind-view,
+.dashboard-view,
 .editor-view,
 .profile-card,
 .auth-panel,
 .token-card,
 .bind-summary,
-.profile-form {
+.profile-form,
+.mini-phone {
   border: 1px solid var(--line);
-  border-radius: 28px;
-  background: var(--panel);
-  box-shadow: var(--shadow);
-  backdrop-filter: blur(16px);
-}
-
-.home-view {
-  display: grid;
-  min-height: 720px;
-  grid-template-columns: minmax(320px, 0.92fr) minmax(360px, 1.08fr);
-  align-items: center;
-  gap: clamp(24px, 5vw, 56px);
-  padding: clamp(22px, 4vw, 44px);
-}
-
-.phone-stage {
-  display: grid;
-  place-items: center;
-}
-
-.mock-phone {
-  position: relative;
-  width: min(100%, 420px);
-  border-radius: 34px;
-  background: linear-gradient(180deg, #b7d0f0, #fae4e8 36%, #fff9f2);
-  padding: 24px 16px 18px;
-  box-shadow: 0 26px 56px rgba(113, 82, 62, 0.18);
-}
-
-.phone-search {
-  width: 100%;
-  min-height: 54px;
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.55);
-  color: rgba(23, 19, 19, 0.52);
-  display: flex;
-  align-items: center;
-  padding: 0 18px;
-  font-size: 1.05rem;
-}
-
-.phone-card {
-  margin-top: 20px;
   border-radius: 30px;
-  background: rgba(255, 255, 255, 0.68);
-  padding: 28px 18px 22px;
-  text-align: center;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent 42%),
+    var(--panel);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(18px);
 }
 
-.profile-chip {
-  display: inline-flex;
-  min-height: 28px;
-  align-items: center;
-  border-radius: 999px;
-  background: linear-gradient(135deg, #f9d26a, #ffbb57);
-  padding: 0 14px;
-  color: rgba(78, 46, 11, 0.84);
-  font-size: 0.82rem;
-  font-weight: 700;
-}
-
-.phone-avatar-ring {
-  width: 132px;
-  height: 132px;
-  margin: 16px auto 12px;
-  padding: 5px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #ffffff, rgba(255, 255, 255, 0.18));
-}
-
-.phone-avatar-ring img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  object-fit: cover;
-}
-
-.phone-card h2 {
-  margin-bottom: 18px;
-  font-size: clamp(2rem, 4vw, 3.5rem);
-  line-height: 1;
-}
-
-.phone-grid {
+.account-view,
+.bind-view {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 14px;
+  grid-template-columns: minmax(0, 1.25fr) minmax(320px, 430px);
+  align-items: start;
+  gap: clamp(22px, 4vw, 56px);
+  min-height: 720px;
+  padding: clamp(20px, 4vw, 48px);
 }
 
-.phone-app {
+.scene-copy,
+.bind-copy {
   display: grid;
-  min-height: 112px;
-  align-items: end;
-  border-radius: 24px;
-  background: rgba(255, 255, 255, 0.68);
-  color: var(--muted);
-  font-size: 0.92rem;
-  font-weight: 600;
-  padding: 12px;
-  position: relative;
+  align-content: start;
+  gap: 18px;
+  max-width: 620px;
 }
 
-.phone-app::before {
-  content: "";
-  position: absolute;
-  top: 14px;
-  left: 50%;
-  width: 58px;
-  height: 58px;
-  border-radius: 18px;
-  transform: translateX(-50%);
-}
-
-.phone-app.ig::before {
-  background: linear-gradient(135deg, #ff6f72, #8348ff);
-}
-
-.phone-app.contact::before {
-  background: linear-gradient(135deg, #d7d2ce, #9ca0a6);
-}
-
-.phone-app.snap::before {
-  background: #ffe654;
-}
-
-.phone-app.wechat::before {
-  background: linear-gradient(135deg, #4ade68, #25b94a);
-}
-
-.phone-app.douyin::before {
-  background: linear-gradient(135deg, #16141b, #f54270);
-}
-
-.home-copy > p:last-of-type,
-.bind-copy > p,
-.account-copy > p:last-of-type,
-.bind-summary p,
+.scene-lead,
+.status-line,
+.device-token,
+.device-status,
+.public-id-line,
 .bio,
-.status-line {
+.token-showcase small,
+.token-card small,
+.mini-phone-body p,
+.cover-status,
+.dashboard-meta span,
+.bind-summary p,
+.qr-empty,
+.wechat-line span,
+.avatar-upload-copy small,
+.platform-meta small {
   color: var(--muted);
   line-height: 1.7;
 }
 
-.hero-actions {
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 22px;
+.showcase-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  align-items: stretch;
 }
 
-.primary-link,
-.primary-button {
-  display: inline-flex;
-  min-height: 50px;
-  align-items: center;
-  justify-content: center;
-  border: 0;
-  border-radius: 16px;
-  background: linear-gradient(135deg, #ff947f, #ffcf7d);
-  color: #4a2415;
-  cursor: pointer;
-  font-weight: 800;
-  padding: 0 20px;
-  text-decoration: none;
-  box-shadow: 0 18px 28px rgba(255, 149, 127, 0.22);
+.mini-phone {
+  min-height: 340px;
+  border-radius: 34px;
+  padding: 18px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.05), transparent 48%),
+    linear-gradient(180deg, #141414, #070707 88%);
+  overflow: hidden;
 }
 
-.token-showcase,
-.nfc-badge {
-  display: inline-grid;
-  gap: 6px;
-  margin-top: 20px;
-  padding: 16px 18px;
-  border: 1px solid rgba(68, 197, 180, 0.18);
-  border-radius: 22px;
-  background: rgba(255, 255, 255, 0.72);
+.mini-phone.preview-claim {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent 42%),
+    linear-gradient(180deg, rgba(9, 9, 9, 0.92), rgba(4, 4, 4, 0.98)),
+    url("/assets/nfc-necklace-hero.png") center/cover no-repeat;
 }
 
-.token-showcase span,
-.nfc-badge span,
-.token-card span,
-.wechat-line span,
-.cover-token-label {
-  color: var(--muted);
-  font-size: 0.84rem;
+.mini-phone.is-center {
+  transform: translateY(18px);
 }
 
-.token-showcase strong,
-.nfc-badge strong,
-.token-card strong {
-  font-size: clamp(1.25rem, 2vw, 1.9rem);
-}
-
-.token-showcase small,
-.token-card small {
-  color: var(--muted);
-}
-
-.token-showcase.inline {
-  margin-top: 18px;
-}
-
-.token-showcase.compact {
-  margin-top: 24px;
-}
-
-.bind-view,
-.account-view {
+.mini-phone-top {
+  display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: clamp(24px, 5vw, 72px);
-  min-height: 700px;
-  padding: clamp(22px, 5vw, 60px);
+  margin-bottom: 26px;
 }
 
-.bind-view {
-  background:
-    radial-gradient(circle at top left, rgba(255, 203, 167, 0.52), transparent 24rem),
-    radial-gradient(circle at bottom right, rgba(116, 221, 203, 0.38), transparent 26rem),
-    var(--panel);
-}
-
-.account-view {
-  grid-template-columns: minmax(300px, 1fr) minmax(320px, 430px);
-  background:
-    radial-gradient(circle at top right, rgba(244, 209, 107, 0.45), transparent 24rem),
-    radial-gradient(circle at bottom left, rgba(255, 166, 143, 0.32), transparent 24rem),
-    var(--panel);
-}
-
-.bind-copy,
-.account-copy {
-  max-width: 520px;
-}
-
-.token-card {
+.mini-phone-top span {
   display: inline-grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--accent);
+  font-weight: 800;
+}
+
+.mini-phone-top small {
+  color: rgba(255, 255, 255, 0.72);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.mini-phone-body {
+  display: grid;
+  align-content: end;
+  min-height: 236px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 26px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.045), transparent 48%),
+    rgba(255, 255, 255, 0.02);
+  padding: 22px;
+}
+
+.mini-phone-body strong {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 1.45rem;
+}
+
+.mini-chip-row,
+.sample-socials,
+.editor-mini-list {
+  display: flex;
+  flex-wrap: wrap;
   gap: 8px;
-  min-width: min(100%, 340px);
-  margin-top: 18px;
-  padding: 18px 20px;
+  margin-top: 14px;
 }
 
-.token-card-accent {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.82), rgba(255, 241, 231, 0.92));
+.mini-chip-row span,
+.sample-socials span,
+.editor-mini-list span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.04);
+  color: #e8e7e2;
+  padding: 0 12px;
+  font-size: 0.82rem;
 }
 
-.token-card.mini {
-  min-width: 0;
-  margin-top: 18px;
+.profile-sample {
+  justify-items: center;
+  text-align: center;
+}
+
+.sample-avatar {
+  width: 82px;
+  height: 82px;
+  margin-bottom: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.22);
+  border-radius: 50%;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.24), rgba(255, 255, 255, 0.06)),
+    linear-gradient(135deg, #202020, #090909);
+  box-shadow: inset 0 0 0 10px rgba(255, 255, 255, 0.03);
 }
 
 .auth-panel {
   width: min(100%, 440px);
   padding: 24px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 38%),
+    rgba(255, 255, 255, 0.028);
+}
+
+.stack-form,
+.profile-form {
+  display: grid;
+  gap: 14px;
+}
+
+.stack-form label,
+.profile-form label {
+  display: grid;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 0.92rem;
+  min-width: 0;
 }
 
 .segmented {
@@ -431,7 +474,7 @@ h1 {
   padding: 4px;
   border: 1px solid var(--line);
   border-radius: 18px;
-  background: rgba(255, 255, 255, 0.62);
+  background: rgba(255, 255, 255, 0.03);
 }
 
 .segmented button {
@@ -444,100 +487,17 @@ h1 {
 }
 
 .segmented button.is-active {
-  color: var(--text);
-  background: rgba(255, 242, 233, 0.92);
-  box-shadow: 0 10px 18px rgba(108, 72, 47, 0.08);
-}
-
-.stack-form,
-.profile-form {
-  display: grid;
-  gap: 14px;
-}
-
-.avatar-upload {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 18px;
-  border: 1px solid var(--line);
-  border-radius: 24px;
-  background: rgba(255, 255, 255, 0.84);
-  padding: 18px;
-}
-
-.avatar-upload-copy span,
-.avatar-upload-copy strong,
-.avatar-upload-copy small {
-  display: block;
-}
-
-.avatar-upload-copy span {
-  color: var(--muted);
-  font-size: 0.84rem;
-}
-
-.avatar-upload-copy strong {
-  margin: 6px 0 8px;
-  font-size: 1.16rem;
-}
-
-.avatar-upload-copy small {
-  color: var(--muted);
-  line-height: 1.6;
-}
-
-.avatar-upload-side {
-  display: grid;
-  justify-items: center;
-  gap: 10px;
-}
-
-.editor-avatar-preview {
-  width: 92px;
-  height: 92px;
-  border: 4px solid rgba(255, 255, 255, 0.95);
-  border-radius: 50%;
-  object-fit: cover;
-  background: #fff;
-  box-shadow: 0 12px 24px rgba(120, 88, 67, 0.14);
-}
-
-.upload-button {
-  position: relative;
-  display: inline-flex;
-  min-height: 44px;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid var(--line);
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.95);
-  color: var(--text);
-  cursor: pointer;
-  padding: 0 16px;
-}
-
-.upload-button input {
-  position: absolute;
-  inset: 0;
-  opacity: 0;
-  cursor: pointer;
-}
-
-label {
-  display: grid;
-  gap: 8px;
-  min-width: 0;
-  color: var(--muted);
-  font-size: 0.92rem;
+  color: #111;
+  background: linear-gradient(135deg, #f0e0b9 0%, #c8a86b 100%);
+  box-shadow: 0 12px 20px rgba(202, 169, 105, 0.18);
 }
 
 input,
 textarea {
   width: 100%;
-  border: 1px solid var(--line-strong);
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid var(--line-2);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.03);
   color: var(--text);
   outline: none;
 }
@@ -557,15 +517,204 @@ textarea {
   resize: vertical;
 }
 
-input:focus,
-textarea:focus {
-  border-color: rgba(68, 197, 180, 0.55);
-  box-shadow: 0 0 0 4px rgba(68, 197, 180, 0.12);
+input::placeholder,
+textarea::placeholder {
+  color: rgba(166, 165, 160, 0.72);
 }
 
-.status-line {
-  min-height: 1.4em;
-  margin: 12px 0 0;
+input:focus,
+textarea:focus {
+  border-color: rgba(229, 211, 165, 0.55);
+  box-shadow: 0 0 0 4px rgba(229, 211, 165, 0.1);
+}
+
+.primary-button,
+.primary-link {
+  display: inline-flex;
+  min-height: 50px;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #f2e4bf 0%, #cdb27a 50%, #f1e1b4 100%);
+  color: #191510;
+  cursor: pointer;
+  font-weight: 800;
+  padding: 0 20px;
+  text-decoration: none;
+  box-shadow: 0 14px 28px rgba(211, 173, 98, 0.18);
+}
+
+.quiet-link {
+  min-height: 50px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.token-showcase,
+.nfc-badge,
+.token-card,
+.dashboard-meta,
+.bind-summary,
+.profile-card,
+.empty-state {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.token-showcase,
+.nfc-badge {
+  display: inline-grid;
+  gap: 6px;
+  padding: 16px 18px;
+}
+
+.token-showcase.compact {
+  margin-bottom: 8px;
+}
+
+.token-showcase.inline {
+  margin-top: 18px;
+}
+
+.token-showcase span,
+.nfc-badge span,
+.token-card span,
+.cover-token-label {
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.token-showcase strong,
+.nfc-badge strong,
+.token-card strong,
+.cover-topline strong,
+.dashboard-meta strong {
+  font-size: clamp(1.22rem, 2vw, 1.9rem);
+  letter-spacing: 0.02em;
+}
+
+.token-card {
+  display: grid;
+  gap: 6px;
+  padding: 18px;
+}
+
+.token-card-accent {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.06), transparent 34%),
+    rgba(255, 255, 255, 0.03);
+}
+
+.flow-pill-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.flow-pill-row span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 38px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--accent-2);
+  padding: 0 14px;
+  font-size: 0.88rem;
+}
+
+.bind-summary {
+  align-self: start;
+  min-height: 320px;
+  padding: 24px;
+}
+
+.bind-summary h2 {
+  margin-bottom: 12px;
+  font-size: clamp(1.45rem, 2vw, 2rem);
+}
+
+.dashboard-view {
+  padding: clamp(20px, 4vw, 40px);
+}
+
+.dashboard-head {
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 18px;
+}
+
+.dashboard-meta {
+  display: grid;
+  gap: 10px;
+  min-width: 220px;
+  padding: 18px;
+  box-shadow: 0 12px 22px rgba(0, 0, 0, 0.24);
+  text-align: right;
+}
+
+.device-list {
+  display: grid;
+  gap: 14px;
+}
+
+.device-card {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent 42%),
+    rgba(255, 255, 255, 0.03);
+  padding: 18px;
+  box-shadow: var(--shadow);
+}
+
+.device-avatar {
+  width: 88px;
+  height: 88px;
+  flex: none;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 24px;
+  object-fit: cover;
+  background: #111;
+}
+
+.device-meta {
+  display: grid;
+  gap: 8px;
+  width: 100%;
+}
+
+.device-meta h2 {
+  margin: 0;
+  font-size: 1.3rem;
+}
+
+.device-status.is-bound {
+  color: var(--cyan);
+}
+
+.device-status.is-empty {
+  color: #d8b77c;
+}
+
+.device-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.empty-state {
+  padding: 22px;
+  border-style: dashed;
+  color: var(--muted);
 }
 
 .editor-view {
@@ -587,7 +736,7 @@ textarea:focus {
 
 .editor-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1.24fr) minmax(280px, 0.76fr);
+  grid-template-columns: minmax(0, 1.28fr) minmax(280px, 0.72fr);
   gap: 18px;
 }
 
@@ -605,179 +754,154 @@ textarea:focus {
   gap: 10px;
 }
 
-.bind-summary {
-  align-self: start;
-  min-height: 320px;
-  padding: 24px;
-}
-
-.bind-summary h2 {
-  margin-bottom: 12px;
-  font-size: clamp(1.45rem, 2vw, 2rem);
-}
-
-.dashboard-view {
-  padding: clamp(20px, 4vw, 40px);
-}
-
-.dashboard-head {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 18px;
-  margin-bottom: 18px;
-}
-
-.dashboard-meta {
-  display: grid;
-  gap: 10px;
-  min-width: 220px;
-  padding: 18px;
-  border: 1px solid var(--line);
-  border-radius: 22px;
-  background: rgba(255, 255, 255, 0.76);
-  box-shadow: 0 12px 22px rgba(108, 72, 47, 0.06);
-  text-align: right;
-}
-
-.dashboard-meta span {
-  color: var(--muted);
-}
-
-.dashboard-meta strong {
-  font-size: 1.2rem;
-}
-
-.device-list {
-  display: grid;
-  gap: 14px;
-}
-
-.device-card {
+.avatar-upload {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 18px;
   border: 1px solid var(--line);
   border-radius: 24px;
-  background: rgba(255, 255, 255, 0.84);
+  background: rgba(255, 255, 255, 0.03);
   padding: 18px;
-  box-shadow: var(--shadow);
 }
 
-.device-avatar {
-  width: 88px;
-  height: 88px;
-  flex: none;
-  border: 4px solid rgba(255, 255, 255, 0.95);
-  border-radius: 24px;
-  object-fit: cover;
-  background: #fff;
+.avatar-upload-copy span,
+.avatar-upload-copy strong,
+.avatar-upload-copy small {
+  display: block;
 }
 
-.device-meta {
+.avatar-upload-copy span {
+  color: var(--muted);
+  font-size: 0.84rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.avatar-upload-copy strong {
+  margin: 6px 0 8px;
+  font-size: 1.14rem;
+}
+
+.avatar-upload-side {
   display: grid;
-  gap: 8px;
-  width: 100%;
-}
-
-.device-meta h2 {
-  margin: 0;
-  font-size: 1.35rem;
-}
-
-.device-token,
-.device-status {
-  color: var(--muted);
-}
-
-.device-actions {
-  display: flex;
-  flex-wrap: wrap;
+  justify-items: center;
   gap: 10px;
-  margin-top: 4px;
 }
 
-.empty-state {
-  padding: 22px;
-  border: 1px dashed var(--line-strong);
-  border-radius: 22px;
-  background: rgba(255, 255, 255, 0.7);
-  color: var(--muted);
+.editor-avatar-preview {
+  width: 94px;
+  height: 94px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 50%;
+  object-fit: cover;
+  background: #111;
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.36);
+}
+
+.upload-button {
+  position: relative;
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text);
+  cursor: pointer;
+  padding: 0 16px;
+}
+
+.upload-button input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.profile-card {
+  width: min(100%, 430px);
+  overflow: hidden;
+  background: rgba(8, 8, 8, 0.94);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: var(--shadow);
 }
 
 .public-view {
   display: grid;
   place-items: center;
   min-height: calc(100vh - 120px);
-}
-
-.owner-tools {
-  width: min(100%, 430px);
-  justify-content: flex-end;
-  margin-bottom: 12px;
-}
-
-.profile-card {
-  width: min(100%, 430px);
-  background: rgba(255, 252, 248, 0.92);
+  padding: 12px 0 28px;
 }
 
 .profile-cover {
   position: relative;
   min-height: 210px;
-  padding: 18px;
+  padding: 18px 18px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   background:
-    radial-gradient(circle at top left, rgba(255, 173, 140, 0.88), transparent 18rem),
-    radial-gradient(circle at bottom right, rgba(71, 205, 193, 0.72), transparent 20rem),
-    linear-gradient(135deg, #ffd9cb, #c6f0eb 72%);
+    radial-gradient(circle at 14% 14%, rgba(255, 255, 255, 0.05), transparent 30%),
+    radial-gradient(circle at 84% 18%, rgba(142, 240, 228, 0.04), transparent 28%),
+    linear-gradient(135deg, rgba(16, 16, 16, 0.96) 0%, rgba(5, 5, 5, 0.98) 62%, rgba(14, 14, 14, 0.96) 100%);
 }
 
 .cover-topline {
+  display: flex;
   align-items: center;
   gap: 10px;
 }
 
-.cover-topline strong {
-  font-size: 1.2rem;
+.cover-hero {
+  position: absolute;
+  inset: 54px 18px 52px;
+  display: grid;
+  place-items: center;
+  opacity: 0.25;
+  pointer-events: none;
+}
+
+.cover-hero img {
+  max-width: min(100%, 360px);
+  max-height: 170px;
+  object-fit: contain;
+  filter: grayscale(1) brightness(1.1);
 }
 
 .cover-status {
   position: absolute;
   right: 18px;
   bottom: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.82);
+  background: rgba(255, 255, 255, 0.05);
   padding: 8px 12px;
   font-size: 0.88rem;
 }
 
 .profile-main {
-  padding: 0 20px 22px;
+  padding: 0 18px 20px;
   text-align: center;
 }
 
 .avatar {
   display: block;
-  width: 126px;
-  height: 126px;
-  margin: -64px auto 14px;
-  border: 5px solid rgba(255, 255, 255, 0.9);
+  width: 116px;
+  height: 116px;
+  margin: -58px auto 12px;
+  border: 3px solid rgba(0, 0, 0, 0.92);
   border-radius: 50%;
   object-fit: cover;
-  background: #fff;
-  box-shadow: 0 14px 30px rgba(120, 88, 67, 0.15);
+  background: #111;
+  box-shadow: 0 16px 34px rgba(0, 0, 0, 0.38);
+  position: relative;
+  z-index: 1;
 }
 
 .profile-main h1 {
   margin-bottom: 10px;
-  font-size: clamp(2.1rem, 4vw, 3.4rem);
+  font-size: clamp(2rem, 4vw, 3.3rem);
   line-height: 1;
-}
-
-.public-id-line {
-  margin-bottom: 12px;
-  color: var(--muted);
-  font-size: 0.95rem;
 }
 
 .tag-row {
@@ -789,101 +913,114 @@ textarea:focus {
 }
 
 .tag-row span {
-  border: 1px solid rgba(68, 197, 180, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.03);
   padding: 8px 12px;
-  color: #4a403c;
-  font-size: 0.9rem;
+  color: #dfdfda;
+  font-size: 0.88rem;
 }
 
-.app-grid {
+.platform-list {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.platform-row {
+  display: flex;
+  align-items: center;
   gap: 14px;
-}
-
-.app-tile {
-  display: grid;
-  min-height: 176px;
-  place-items: center;
-  gap: 8px;
-  border: 0;
-  border-radius: 24px;
-  padding: 18px 10px;
-  color: inherit;
+  width: 100%;
+  min-height: 66px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.026);
+  padding: 12px 14px;
+  color: var(--text);
+  text-align: left;
   cursor: pointer;
-  text-align: center;
-  text-decoration: none;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  transition:
+    transform 160ms ease,
+    border-color 160ms ease,
+    background 160ms ease;
 }
 
-.app-tile strong,
-.app-tile small,
-.wechat-line strong {
-  display: block;
+.platform-row.is-disabled {
+  opacity: 0.46;
+  cursor: not-allowed;
 }
 
-.app-tile small {
-  color: rgba(34, 23, 20, 0.62);
+.platform-row.is-active {
+  border-color: rgba(255, 255, 255, 0.18);
 }
 
-.wechat-tile {
-  background: linear-gradient(180deg, #6bf188, #37c95f);
-  color: #12311b;
-}
-
-.douyin-tile {
-  background: linear-gradient(180deg, #26212b, #ff5f83);
-  color: #fff7fa;
-}
-
-.douyin-tile small {
-  color: rgba(255, 247, 250, 0.76);
-}
-
-.douyin-tile span {
+.platform-icon {
   display: grid;
-  width: 84px;
-  height: 84px;
-  place-items: center;
-  border-radius: 24px;
-  background: rgba(0, 0, 0, 0.76);
-  color: #fff;
-  font-weight: 900;
-}
-
-.app-tile.is-disabled {
-  opacity: 0.48;
-  pointer-events: none;
-}
-
-.wechat-mark {
-  position: relative;
-  width: 98px;
-  height: 80px;
-}
-
-.wechat-mark b,
-.wechat-mark i {
-  position: absolute;
-  display: block;
-  border-radius: 50%;
-  background: #fff;
-}
-
-.wechat-mark b {
-  top: 6px;
-  left: 0;
-  width: 62px;
-  height: 48px;
-}
-
-.wechat-mark i {
-  right: 0;
-  bottom: 10px;
-  width: 52px;
+  width: 42px;
   height: 42px;
+  flex: none;
+  place-items: center;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    0 10px 20px rgba(0, 0, 0, 0.18);
+}
+
+.platform-icon svg {
+  display: block;
+  width: 22px;
+  height: 22px;
+  fill: currentColor;
+  stroke: currentColor;
+}
+
+.platform-meta {
+  display: grid;
+  gap: 2px;
+}
+
+.platform-meta strong {
+  font-size: 1rem;
+}
+
+.platform-meta span {
+  color: var(--muted);
+  font-size: 0.86rem;
+}
+
+.platform-chevron {
+  margin-left: auto;
+  color: rgba(255, 255, 255, 0.34);
+  font-size: 1.6rem;
+  line-height: 1;
+}
+
+.platform-row.wechat .platform-icon {
+  background: linear-gradient(135deg, #66d36f, #25b94a);
+  color: #f7fff8;
+}
+
+.platform-row.douyin .platform-icon {
+  background: linear-gradient(135deg, #17151d, #ff5e88);
+}
+
+.platform-row.instagram .platform-icon {
+  background: linear-gradient(135deg, #ff7b64, #8b4dff);
+}
+
+.platform-row.xiaohongshu .platform-icon {
+  background: linear-gradient(135deg, #f44336, #e31b4b);
+}
+
+.platform-row.x .platform-icon {
+  background: linear-gradient(135deg, #6c7b94, #89a4ff);
+}
+
+.platform-row.youtube .platform-icon {
+  background: linear-gradient(135deg, #ff4b4b, #c80000);
 }
 
 .wechat-line {
@@ -891,9 +1028,15 @@ textarea:focus {
   justify-content: space-between;
   gap: 12px;
   margin-top: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 20px;
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.03);
   padding: 16px 18px;
+}
+
+.wechat-line strong {
+  display: block;
+  font-size: 1rem;
 }
 
 .wechat-dialog {
@@ -901,13 +1044,15 @@ textarea:focus {
   padding: 0;
   border: 1px solid var(--line);
   border-radius: 28px;
-  background: rgba(255, 252, 248, 0.98);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent 35%),
+    #090909;
   color: var(--text);
   box-shadow: var(--shadow);
 }
 
 .wechat-dialog::backdrop {
-  background: rgba(34, 23, 20, 0.18);
+  background: rgba(0, 0, 0, 0.72);
 }
 
 .dialog-head {
@@ -930,7 +1075,7 @@ textarea:focus {
   overflow: hidden;
   border: 1px solid var(--line);
   border-radius: 22px;
-  background: rgba(255, 255, 255, 0.78);
+  background: rgba(255, 255, 255, 0.03);
 }
 
 .qr-stage img {
@@ -947,10 +1092,8 @@ textarea:focus {
 
 .qr-empty {
   max-width: 260px;
-  color: var(--muted);
   padding: 24px;
   text-align: center;
-  line-height: 1.65;
 }
 
 .qr-empty strong {
@@ -975,51 +1118,459 @@ button:disabled {
   opacity: 0.44;
 }
 
-@media (max-width: 760px) {
-  .shell {
-    width: min(100% - 18px, 640px);
-    padding-top: 12px;
-  }
+.brand-mark,
+.loading-mark {
+  position: relative;
+  overflow: hidden;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.02)),
+    linear-gradient(135deg, #161616, #070707);
+}
 
-  .topbar,
-  .bind-view,
-  .editor-head,
-  .dashboard-head,
-  .dialog-actions {
-    align-items: stretch;
-    flex-direction: column;
-  }
+.brand-mark img,
+.loading-mark img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
 
-  .home-view,
+.brand-mark {
+  padding: 6px;
+}
+
+.brand-mark img {
+  border-radius: 13px;
+}
+
+.loading-mark {
+  padding: 8px;
+}
+
+.loading-mark img {
+  border-radius: 18px;
+}
+
+.loading-view {
+  position: relative;
+  overflow: hidden;
+  border-color: rgba(255, 255, 255, 0.14);
+  background:
+    radial-gradient(circle at 50% 20%, rgba(255, 255, 255, 0.12), transparent 28%),
+    radial-gradient(circle at 20% 15%, rgba(255, 211, 160, 0.14), transparent 20%),
+    radial-gradient(circle at 82% 20%, rgba(150, 235, 221, 0.1), transparent 22%),
+    rgba(10, 10, 10, 0.94);
+}
+
+.loading-view::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: url("/assets/nextouch-marble-user.png") center/cover no-repeat;
+  opacity: 0.18;
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+.loading-view > * {
+  position: relative;
+  z-index: 1;
+}
+
+.account-view,
+.bind-view {
+  gap: clamp(18px, 3vw, 40px);
+  border-color: rgba(255, 255, 255, 0.1);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.035), transparent 34%),
+    rgba(12, 12, 12, 0.78);
+}
+
+.scene-copy,
+.bind-copy {
+  max-width: 640px;
+}
+
+.scene-copy h1,
+.bind-copy h1 {
+  max-width: 12ch;
+  font-size: clamp(2rem, 3.2vw, 3.5rem);
+  line-height: 0.96;
+}
+
+.scene-lead {
+  max-width: 54ch;
+  font-size: 1.02rem;
+}
+
+.brand-note {
+  display: grid;
+  gap: 6px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.05), transparent 32%),
+    rgba(255, 255, 255, 0.03);
+}
+
+.brand-note span {
+  color: var(--cyan);
+  font-size: 0.8rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.brand-note strong {
+  font-size: 1.2rem;
+  line-height: 1.15;
+}
+
+.brand-note small {
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.auth-panel {
+  border-color: rgba(255, 255, 255, 0.1);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.06), transparent 28%),
+    rgba(18, 18, 18, 0.78);
+}
+
+.mini-phone,
+.token-card,
+.bind-summary,
+.profile-card,
+.dashboard-meta,
+.device-card,
+.wechat-line,
+.platform-row,
+.profile-form,
+.avatar-upload,
+.empty-state {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.mini-phone {
+  border-radius: 30px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 30%),
+    rgba(12, 12, 12, 0.88);
+}
+
+.mini-phone.preview-claim,
+.mini-phone.preview-editor,
+.mini-phone.preview-profile {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 38%),
+    rgba(12, 12, 12, 0.84);
+}
+
+.mini-phone-body {
+  min-height: 244px;
+  border-radius: 24px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.045), transparent 48%),
+    rgba(255, 255, 255, 0.03);
+}
+
+.sample-avatar {
+  border-color: rgba(255, 255, 255, 0.18);
+  background:
+    radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.24), transparent 26%),
+    linear-gradient(135deg, #262626, #090909);
+}
+
+.auth-panel,
+.bind-summary,
+.dashboard-meta,
+.profile-form,
+.profile-card,
+.wechat-dialog {
+  box-shadow: 0 30px 84px rgba(0, 0, 0, 0.5);
+}
+
+.dashboard-view,
+.editor-view {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 30%),
+    rgba(6, 6, 6, 0.78);
+}
+
+.dashboard-meta strong {
+  color: var(--text);
+}
+
+.device-card {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.05), transparent 34%),
+    rgba(255, 255, 255, 0.03);
+}
+
+.profile-form {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 28px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.05), transparent 22%),
+    rgba(10, 10, 10, 0.9);
+}
+
+.avatar-upload {
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at 18% 18%, rgba(255, 255, 255, 0.05), transparent 30%),
+    rgba(255, 255, 255, 0.03);
+}
+
+.editor-avatar-preview {
+  width: 92px;
+  height: 92px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.22);
+  object-fit: cover;
+  background: #111;
+}
+
+.upload-button {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text);
+  cursor: pointer;
+  padding: 0 16px;
+  transition:
+    transform 160ms ease,
+    border-color 160ms ease,
+    background 160ms ease;
+}
+
+.upload-button input {
+  display: none;
+}
+
+.upload-button:hover {
+  transform: translateY(-1px);
+  border-color: rgba(229, 211, 165, 0.35);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.profile-card {
+  width: min(100%, 392px);
+  overflow: hidden;
+  background: transparent;
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: none;
+}
+
+.profile-cover {
+  min-height: 168px;
+  padding: 16px 12px 6px;
+  border-bottom: 0;
+  background:
+    linear-gradient(180deg, rgba(6, 6, 6, 0.14), rgba(6, 6, 6, 0.26)),
+    url("/assets/nextouch-marble-user.png") center/cover no-repeat;
+}
+
+.cover-topline {
+  gap: 8px;
+}
+
+.cover-status {
+  top: 18px;
+  right: 18px;
+  bottom: auto;
+}
+
+.profile-main {
+  padding: 0 12px 16px;
+}
+
+.avatar {
+  width: 116px;
+  height: 116px;
+  margin: -58px auto 12px;
+  border: 4px solid rgba(255, 255, 255, 0.9);
+  box-shadow:
+    0 16px 34px rgba(0, 0, 0, 0.48),
+    0 0 0 8px rgba(0, 0, 0, 0.56);
+}
+
+.profile-main h1 {
+  margin-bottom: 8px;
+  font-size: clamp(2rem, 4vw, 3rem);
+}
+
+.public-id-line {
+  margin-bottom: 8px;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.94rem;
+}
+
+.bio {
+  max-width: 30ch;
+  margin: 0 auto 10px;
+}
+
+.nfc-status-chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  margin-bottom: 16px;
+  padding: 0 14px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(235, 234, 229, 0.9);
+  font-size: 0.88rem;
+}
+
+.profile-plaque {
+  display: grid;
+  place-items: center;
+  gap: 4px;
+  min-height: 86px;
+  margin: 6px 0 16px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 18px;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02)),
+    rgba(255, 255, 255, 0.03);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  text-align: center;
+}
+
+.profile-plaque strong {
+  font-size: 1.5rem;
+  letter-spacing: 0.14em;
+}
+
+.profile-plaque small {
+  color: var(--muted);
+  letter-spacing: 0.22em;
+}
+
+.platform-list {
+  margin-bottom: 14px;
+}
+
+.platform-row {
+  min-height: 64px;
+  border-radius: 999px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent 26%),
+    rgba(255, 255, 255, 0.03);
+}
+
+.platform-icon {
+  width: 46px;
+  height: 46px;
+}
+
+.platform-meta strong {
+  font-size: 1.03rem;
+}
+
+.platform-meta span {
+  font-size: 0.84rem;
+}
+
+.wechat-line {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent 30%),
+    rgba(255, 255, 255, 0.03);
+}
+
+.wechat-dialog {
+  border-color: rgba(255, 255, 255, 0.12);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent 34%),
+    rgba(6, 6, 6, 0.98);
+}
+
+.qr-stage {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent 30%),
+    rgba(255, 255, 255, 0.03);
+}
+
+.token-card,
+.nfc-badge,
+.dashboard-meta {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.05), transparent 34%),
+    rgba(255, 255, 255, 0.03);
+}
+
+@media (max-width: 1060px) {
   .account-view,
+  .bind-view,
   .editor-layout {
     grid-template-columns: 1fr;
   }
 
-  .home-view,
+  .auth-panel {
+    width: 100%;
+  }
+
+  .showcase-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .mini-phone.is-center {
+    transform: none;
+  }
+}
+
+@media (max-width: 760px) {
+  .shell {
+    width: min(100% - 16px, 640px);
+    padding-top: 12px;
+  }
+
+  .topbar,
+  .editor-head,
+  .dashboard-head,
+  .dialog-actions,
+  .wechat-line,
+  .avatar-upload {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .account-view,
   .bind-view,
-  .account-view {
+  .editor-view,
+  .dashboard-view {
     min-height: 0;
     padding: 18px;
   }
 
-  .phone-grid,
-  .app-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .loading-view {
+    min-height: calc(100vh - 96px);
+    padding: 24px 18px;
+  }
+
+  .loading-view h1 {
+    max-width: 10ch;
+    font-size: clamp(1.8rem, 8vw, 2.8rem);
+  }
+
+  .loading-view p:last-of-type {
+    max-width: 28ch;
+    font-size: 0.95rem;
   }
 
   .profile-form {
     grid-template-columns: 1fr;
   }
 
-  .avatar-upload {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-
-  .device-card {
-    align-items: flex-start;
-    flex-direction: column;
+  .full {
+    grid-column: auto;
   }
 
   .dashboard-meta,
@@ -1028,7 +1579,193 @@ button:disabled {
     text-align: left;
   }
 
+  .device-card {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .account-view,
+  .bind-view {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .auth-panel {
+    order: -1;
+  }
+
+  .profile-card {
+    width: min(100%, 100%);
+  }
+
+  .avatar {
+    width: 112px;
+    height: 112px;
+    margin-top: -66px;
+  }
+
+  .platform-row {
+    min-height: 66px;
+  }
+
+  .platform-icon {
+    width: 42px;
+    height: 42px;
+  }
+}
+
+@media (max-width: 1060px) {
+  .account-view,
+  .bind-view,
+  .editor-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .auth-panel {
+    width: 100%;
+  }
+
+  .showcase-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .mini-phone.is-center {
+    transform: none;
+  }
+}
+
+@media (max-width: 760px) {
+  .shell {
+    width: min(100% - 16px, 640px);
+    padding-top: 12px;
+  }
+
+  .topbar,
+  .editor-head,
+  .dashboard-head,
+  .dialog-actions,
+  .wechat-line,
+  .avatar-upload {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .account-view,
+  .bind-view,
+  .editor-view,
+  .dashboard-view {
+    min-height: 0;
+    padding: 18px;
+  }
+
+  .loading-view {
+    min-height: calc(100vh - 96px);
+    padding: 24px 18px;
+  }
+
+  .loading-view h1 {
+    max-width: 10ch;
+    font-size: clamp(1.8rem, 8vw, 2.8rem);
+  }
+
+  .loading-view p:last-of-type {
+    max-width: 28ch;
+    font-size: 0.95rem;
+  }
+
+  .profile-form {
+    grid-template-columns: 1fr;
+  }
+
   .full {
     grid-column: auto;
+  }
+
+  .dashboard-meta,
+  .editor-links {
+    justify-items: start;
+    text-align: left;
+  }
+
+  .device-card {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .account-view,
+  .bind-view {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .auth-panel {
+    order: -1;
+  }
+
+  .showcase-grid {
+    display: none;
+  }
+
+  .scene-copy {
+    max-width: none;
+  }
+
+  .public-view {
+    min-height: 0;
+    padding: 8px 0 20px;
+  }
+
+  .profile-card {
+    width: min(100%, 398px);
+    border-radius: 26px;
+  }
+
+  .profile-cover {
+    min-height: 184px;
+    padding: 14px 14px 12px;
+  }
+
+  .profile-main {
+    padding: 0 14px 18px;
+  }
+
+  .avatar {
+    width: 104px;
+    height: 104px;
+    margin: -52px auto 10px;
+  }
+
+  .profile-main h1 {
+    font-size: clamp(1.8rem, 10vw, 2.5rem);
+  }
+
+  .platform-list {
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .platform-row {
+    min-height: 60px;
+    border-radius: 20px;
+    gap: 12px;
+    padding: 11px 12px;
+  }
+
+  .platform-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 13px;
+  }
+
+  .platform-meta strong {
+    font-size: 0.95rem;
+  }
+
+  .platform-meta span {
+    font-size: 0.82rem;
+  }
+
+  .wechat-line {
+    padding: 14px 15px;
   }
 }
