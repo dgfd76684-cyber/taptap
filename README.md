@@ -36,3 +36,5 @@ https://taptap.xin/tap/A8K2M7
 ```
 
 Unclaimed tags show the claim page. Claimed tags show the owner public profile. Edits happen in the backend and do not require rewriting the tag.
+
+<!-- railway deploy trigger: 2026-06-02 -->
