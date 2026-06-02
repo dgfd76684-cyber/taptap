@@ -36,10 +36,9 @@ const DEFAULT_TOKEN = "123";
 const SOCIAL_PLATFORM_META = [
   { key: "wechat", label: "微信 / WeChat", subtitle: "好友码已上传", accent: "wechat" },
   { key: "douyin", label: "抖音 / Douyin", subtitle: "点击直达主页", accent: "douyin" },
-  { key: "instagram", label: "Instagram", subtitle: "即将支持", accent: "instagram" },
-  { key: "xiaohongshu", label: "小红书 / Xiaohongshu", subtitle: "即将支持", accent: "xiaohongshu" },
-  { key: "x", label: "Twitter / X", subtitle: "即将支持", accent: "x" },
-  { key: "youtube", label: "YouTube", subtitle: "即将支持", accent: "youtube" },
+  { key: "instagram", label: "Instagram", subtitle: "点击直达主页", accent: "instagram" },
+  { key: "xiaohongshu", label: "小红书 / Xiaohongshu", subtitle: "点击直达主页", accent: "xiaohongshu" },
+  { key: "twitter", label: "Twitter / X", subtitle: "点击直达主页", accent: "twitter" },
 ];
 
 const PLATFORM_ICON_MARKUP = {
@@ -55,8 +54,7 @@ const PLATFORM_ICON_MARKUP = {
   `,
   douyin: `
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-      <path d="M14.1 3.8v7.1a4.1 4.1 0 1 1-3-1.2V6.4c1.1 0 2.2.3 3 .7V3.8Z"/>
-      <path d="M10 16.4a1.9 1.9 0 1 0 0-3.8 1.9 1.9 0 0 0 0 3.8Zm4.7-1.2c1.8 0 3.5 1.1 4.1 2.7.2.5-.1 1-.6 1.2-.5.2-1.1-.1-1.3-.6-.3-.8-1.2-1.4-2.2-1.4-.9 0-1.8.5-2.1 1.2-.2.5-.8.8-1.3.6-.5-.2-.8-.8-.5-1.3.7-1.5 2.3-2.4 3.9-2.4Z"/>
+      <path d="M14.5 3.5c.4 2.6 1.9 4.2 4.5 4.6v3.2c-1.8 0-3.4-.6-4.8-1.7v6.1a5 5 0 1 1-5-5c.4 0 .8 0 1.2.1v3.3a2 2 0 1 0 1.4 1.9V3.5h2.7Z"/>
     </svg>
   `,
   instagram: `
@@ -72,14 +70,9 @@ const PLATFORM_ICON_MARKUP = {
       <text x="12" y="15.3" text-anchor="middle" fill="#fff" font-size="8.2" font-weight="800" font-family="PingFang SC, sans-serif">小</text>
     </svg>
   `,
-  x: `
+  twitter: `
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
       <path d="M5 5.4h3.5l4 5.3 4.1-5.3H20l-6.2 7.8L20 18.6h-3.4l-4.4-5.8-4.4 5.8H4l6.4-8.1L5 5.4Z"/>
-    </svg>
-  `,
-  youtube: `
-    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-      <path d="M10.2 9.3v5.4l4.8-2.7-4.8-2.7Z" fill="#fff"/>
     </svg>
   `,
 };
@@ -346,6 +339,9 @@ function hydrateEditor(profile) {
   profileForm.elements.wechat.value = profile.wechat || "";
   profileForm.elements.wechatQr.value = profile.wechatQr || "";
   profileForm.elements.douyin.value = profile.douyin || "";
+  profileForm.elements.instagram.value = profile.instagram || "";
+  profileForm.elements.xiaohongshu.value = profile.xiaohongshu || "";
+  profileForm.elements.twitter.value = profile.twitter || "";
   updateAvatarPreview(profile.avatar || "");
 
   const token = state.selectedDevice || state.me?.necklaceToken || state.token || DEFAULT_TOKEN;
@@ -386,6 +382,9 @@ function readProfileForm() {
     wechat: profileForm.elements.wechat.value.trim(),
     wechatQr: allowedImage(profileForm.elements.wechatQr.value.trim()),
     douyin: allowedUrl(profileForm.elements.douyin.value.trim()),
+    instagram: allowedUrl(profileForm.elements.instagram.value.trim()),
+    xiaohongshu: allowedUrl(profileForm.elements.xiaohongshu.value.trim()),
+    twitter: allowedUrl(profileForm.elements.twitter.value.trim()),
   };
 }
 
@@ -416,10 +415,9 @@ function renderPublic(profile, token = "") {
 
     for (const meta of SOCIAL_PLATFORM_META) {
       const hasWechat = Boolean(profile.wechat || profile.wechatQr);
-      const hasDouyin = Boolean(profile.douyin);
       const isWechat = meta.key === "wechat";
-      const isDouyin = meta.key === "douyin";
-      const active = (isWechat && hasWechat) || (isDouyin && hasDouyin);
+      const platformUrl = isWechat ? "" : profile[meta.key];
+      const active = (isWechat && hasWechat) || Boolean(platformUrl);
 
       const row = document.createElement(active ? "button" : "div");
       row.className = `platform-row ${meta.key}${active ? " is-active" : " is-disabled"}`;
@@ -436,10 +434,10 @@ function renderPublic(profile, token = "") {
       const subtitle = document.createElement("span");
       if (isWechat) {
         subtitle.textContent = hasWechat ? "好友码 / 可复制微信号" : "等待完善";
-      } else if (isDouyin) {
-        subtitle.textContent = hasDouyin ? "点击直达抖音主页" : "等待完善";
-      } else {
+      } else if (platformUrl) {
         subtitle.textContent = meta.subtitle;
+      } else {
+        subtitle.textContent = "等待完善";
       }
       metaWrap.append(title, subtitle);
 
@@ -453,10 +451,10 @@ function renderPublic(profile, token = "") {
         row.addEventListener("click", () => openWechat(profile));
       }
 
-      if (isDouyin && hasDouyin) {
+      if (!isWechat && platformUrl) {
         const link = document.createElement("a");
         link.className = row.className;
-        link.href = profile.douyin;
+        link.href = platformUrl;
         link.target = "_blank";
         link.rel = "noreferrer";
         link.append(icon, metaWrap, chevron);
