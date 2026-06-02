@@ -1015,7 +1015,8 @@ textarea:focus {
   background: linear-gradient(135deg, #f44336, #e31b4b);
 }
 
-.platform-row.x .platform-icon {
+.platform-row.x .platform-icon,
+.platform-row.twitter .platform-icon {
   background: linear-gradient(135deg, #6c7b94, #89a4ff);
 }
 

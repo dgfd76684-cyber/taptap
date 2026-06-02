@@ -57,7 +57,10 @@ def init_db() -> None:
                 tags TEXT NOT NULL DEFAULT '[]',
                 wechat TEXT NOT NULL DEFAULT '',
                 wechat_qr TEXT NOT NULL DEFAULT '',
-                douyin TEXT NOT NULL DEFAULT ''
+                douyin TEXT NOT NULL DEFAULT '',
+                instagram TEXT NOT NULL DEFAULT '',
+                xiaohongshu TEXT NOT NULL DEFAULT '',
+                twitter TEXT NOT NULL DEFAULT ''
             );
 
             CREATE TABLE IF NOT EXISTS device_profiles (
@@ -70,7 +73,10 @@ def init_db() -> None:
                 tags TEXT NOT NULL DEFAULT '[]',
                 wechat TEXT NOT NULL DEFAULT '',
                 wechat_qr TEXT NOT NULL DEFAULT '',
-                douyin TEXT NOT NULL DEFAULT ''
+                douyin TEXT NOT NULL DEFAULT '',
+                instagram TEXT NOT NULL DEFAULT '',
+                xiaohongshu TEXT NOT NULL DEFAULT '',
+                twitter TEXT NOT NULL DEFAULT ''
             );
 
             CREATE TABLE IF NOT EXISTS necklaces (
@@ -86,6 +92,9 @@ def init_db() -> None:
             );
             """
         )
+
+        ensure_social_columns(connection, "profiles")
+        ensure_social_columns(connection, "device_profiles")
 
         legacy_profiles = connection.execute(
             """
@@ -104,8 +113,9 @@ def init_db() -> None:
                 connection.execute(
                     """
                     INSERT OR IGNORE INTO device_profiles(
-                        token, user_id, slug, name, avatar, bio, tags, wechat, wechat_qr, douyin
-                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                        token, user_id, slug, name, avatar, bio, tags, wechat, wechat_qr, douyin,
+                        instagram, xiaohongshu, twitter
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                     """,
                     (
                         owned["token"],
@@ -118,8 +128,21 @@ def init_db() -> None:
                         legacy["wechat"],
                         legacy["wechat_qr"],
                         legacy["douyin"],
+                        legacy["instagram"],
+                        legacy["xiaohongshu"],
+                        legacy["twitter"],
                     ),
                 )
+
+
+def ensure_social_columns(connection: sqlite3.Connection, table: str) -> None:
+    existing = {
+        row["name"]
+        for row in connection.execute(f"PRAGMA table_info({table})").fetchall()
+    }
+    for column in ("instagram", "xiaohongshu", "twitter"):
+        if column not in existing:
+            connection.execute(f"ALTER TABLE {table} ADD COLUMN {column} TEXT NOT NULL DEFAULT ''")
 def now() -> int:
     return int(time.time())
 
@@ -166,6 +189,9 @@ def public_profile(row: sqlite3.Row | None) -> dict | None:
         "wechat": row["wechat"],
         "wechatQr": row["wechat_qr"],
         "douyin": row["douyin"],
+        "instagram": row["instagram"],
+        "xiaohongshu": row["xiaohongshu"],
+        "twitter": row["twitter"],
     }
 
 
@@ -179,6 +205,9 @@ def device_profile_defaults(name: str, source: sqlite3.Row | None = None) -> dic
         "wechat": source["wechat"] if source else "",
         "wechat_qr": source["wechat_qr"] if source else "",
         "douyin": source["douyin"] if source else "",
+        "instagram": source["instagram"] if source else "",
+        "xiaohongshu": source["xiaohongshu"] if source else "",
+        "twitter": source["twitter"] if source else "",
     }
 
 
@@ -214,8 +243,9 @@ def ensure_device_profile(
     connection.execute(
         """
         INSERT INTO device_profiles(
-            token, user_id, slug, name, avatar, bio, tags, wechat, wechat_qr, douyin
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            token, user_id, slug, name, avatar, bio, tags, wechat, wechat_qr, douyin,
+            instagram, xiaohongshu, twitter
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """,
         (
             token,
@@ -228,6 +258,9 @@ def ensure_device_profile(
             defaults["wechat"],
             defaults["wechat_qr"],
             defaults["douyin"],
+            defaults["instagram"],
+            defaults["xiaohongshu"],
+            defaults["twitter"],
         ),
     )
     return profile_for_token(connection, token)
@@ -524,7 +557,8 @@ class TapHandler(BaseHTTPRequestHandler):
             connection.execute(
                 """
                 UPDATE device_profiles
-                SET name = ?, avatar = ?, bio = ?, tags = ?, wechat = ?, wechat_qr = ?, douyin = ?
+                SET name = ?, avatar = ?, bio = ?, tags = ?, wechat = ?, wechat_qr = ?, douyin = ?,
+                    instagram = ?, xiaohongshu = ?, twitter = ?
                 WHERE token = ?
                 """,
                 (
@@ -535,6 +569,9 @@ class TapHandler(BaseHTTPRequestHandler):
                     str(data.get("wechat", "")).strip()[:48],
                     str(data.get("wechatQr", "")).strip(),
                     str(data.get("douyin", "")).strip(),
+                    str(data.get("instagram", "")).strip(),
+                    str(data.get("xiaohongshu", "")).strip(),
+                    str(data.get("twitter", "")).strip(),
                     token,
                 ),
             )
