@@ -238,6 +238,7 @@ function show(name) {
   if (name === "dashboard") {
     renderDashboard();
   }
+  queueViewAnimation(name);
 }
 
 function setAuthMode(scope, mode) {
@@ -306,6 +307,8 @@ function renderDashboard() {
     card.append(avatar, meta);
     deviceList.append(card);
   });
+
+  queueViewAnimation("dashboard");
 }
 
 function openDeviceEditor(token) {
@@ -465,6 +468,22 @@ function renderPublic(profile, token = "") {
       publicPlatformsRoot.append(row);
     }
   }
+
+  queueViewAnimation("public");
+}
+
+function queueViewAnimation(name) {
+  const view = views[name];
+  if (!view || view.hidden) return;
+
+  view.classList.remove("is-entering");
+  void view.offsetWidth;
+  view.classList.add("is-entering");
+
+  window.clearTimeout(view._enterTimer);
+  view._enterTimer = window.setTimeout(() => {
+    view.classList.remove("is-entering");
+  }, 900);
 }
 function openWechat(profile) {
   if (!profile) return;
