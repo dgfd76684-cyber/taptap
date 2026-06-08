@@ -27,6 +27,12 @@ http://127.0.0.1:4173/
 - `app.js`: routing, auth, claim, and edit logic
 - `styles.css`: NEXTOUCH black marble visual system
 
+## Railway data persistence
+
+- If you deploy on Railway, mount a persistent Volume at `/data`.
+- The app will automatically use `/data/tap_necklace.sqlite3` on Railway when that mount exists.
+- You can still override the database file manually with `DATABASE_PATH`.
+
 ## Product direction
 
 Each physical NFC tag should contain a stable URL such as:

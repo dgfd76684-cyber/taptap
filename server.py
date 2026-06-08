@@ -17,6 +17,7 @@ from urllib.parse import unquote, urlparse
 
 ROOT = Path(__file__).resolve().parent
 DEFAULT_DB_PATH = ROOT / "tap_necklace.sqlite3"
+RAILWAY_VOLUME_DB_PATH = Path("/data/tap_necklace.sqlite3")
 SESSION_COOKIE = "tap_session"
 DEMO_QR = "/assets/wechat-friend-qr.jpg"
 
@@ -25,6 +26,8 @@ def db_path() -> Path:
     configured = os.environ.get("DATABASE_PATH")
     if configured:
         return Path(configured).expanduser()
+    if os.environ.get("RAILWAY_ENVIRONMENT") and Path("/data").exists():
+        return RAILWAY_VOLUME_DB_PATH
     return DEFAULT_DB_PATH
 
 
