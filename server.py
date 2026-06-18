@@ -12,7 +12,7 @@ from http.cookies import SimpleCookie
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 import os
-from urllib.parse import unquote, urlparse
+from urllib.parse import parse_qs, unquote, urlparse
 
 
 ROOT = Path(__file__).resolve().parent
@@ -20,6 +20,9 @@ DEFAULT_DB_PATH = ROOT / "tap_necklace.sqlite3"
 RAILWAY_VOLUME_DB_PATH = Path("/data/tap_necklace.sqlite3")
 SESSION_COOKIE = "tap_session"
 DEMO_QR = "/assets/wechat-friend-qr.jpg"
+APP_VERSION = "0.2"
+MAX_JSON_BYTES = 2_000_000
+DEVICE_TOKEN_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"
 
 
 def db_path() -> Path:
@@ -148,6 +151,24 @@ def ensure_social_columns(connection: sqlite3.Connection, table: str) -> None:
             connection.execute(f"ALTER TABLE {table} ADD COLUMN {column} TEXT NOT NULL DEFAULT ''")
 def now() -> int:
     return int(time.time())
+
+
+def clean_token(value: str) -> str:
+    return "".join(char for char in value.strip() if char.isalnum() or char in "-_")[:48]
+
+
+def generated_token(prefix: str = "", size: int = 8) -> str:
+    prefix = clean_token(prefix).upper()
+    suffix = "".join(secrets.choice(DEVICE_TOKEN_ALPHABET) for _ in range(size))
+    return f"{prefix}{suffix}"
+
+
+def clamp_int(value: object, fallback: int, minimum: int, maximum: int) -> int:
+    try:
+        number = int(value)
+    except (TypeError, ValueError):
+        return fallback
+    return max(minimum, min(maximum, number))
 
 
 def hash_password(password: str) -> str:
@@ -280,15 +301,21 @@ def device_payload(token: str, profile: dict | None, bound_at: int | None) -> di
 
 
 class TapHandler(BaseHTTPRequestHandler):
-    server_version = "NEXTOUCH/0.1"
+    server_version = f"NEXTOUCH/{APP_VERSION}"
 
     def do_GET(self) -> None:
         path = urlparse(self.path).path
+        if path == "/api/health":
+            self.get_health()
+            return
         if path.startswith("/api/tap/"):
             self.get_tap(unquote(path.removeprefix("/api/tap/")))
             return
         if path == "/api/me":
             self.get_me()
+            return
+        if path == "/api/admin/devices":
+            self.admin_list_devices()
             return
         if path.startswith("/api/profile/"):
             self.get_profile(unquote(path.removeprefix("/api/profile/")))
@@ -308,6 +335,9 @@ class TapHandler(BaseHTTPRequestHandler):
             return
         if path == "/api/logout":
             self.logout()
+            return
+        if path == "/api/admin/devices":
+            self.admin_create_devices()
             return
         self.send_error(HTTPStatus.NOT_FOUND)
 
@@ -347,10 +377,19 @@ class TapHandler(BaseHTTPRequestHandler):
         length = int(self.headers.get("Content-Length", "0"))
         if length <= 0:
             return {}
+        if length > MAX_JSON_BYTES:
+            return {"__error__": "请求内容太大。"}
         try:
             return json.loads(self.rfile.read(length).decode())
         except json.JSONDecodeError:
-            return {}
+            return {"__error__": "请求格式不是有效 JSON。"}
+
+    def request_json(self) -> dict | None:
+        data = self.read_json()
+        if "__error__" in data:
+            self.send_json({"error": data["__error__"]}, HTTPStatus.BAD_REQUEST)
+            return None
+        return data
 
     def send_json(self, payload: dict, status: HTTPStatus = HTTPStatus.OK, cookie: str | None = None) -> None:
         body = json.dumps(payload, ensure_ascii=False).encode()
@@ -367,6 +406,27 @@ class TapHandler(BaseHTTPRequestHandler):
         cookies = SimpleCookie(self.headers.get("Cookie"))
         morsel = cookies.get(SESSION_COOKIE)
         return morsel.value if morsel else None
+
+    def admin_authorized(self) -> bool:
+        expected = os.environ.get("ADMIN_API_TOKEN", "").strip()
+        if not expected:
+            return False
+        provided = self.headers.get("X-Admin-Token", "").strip()
+        return hmac.compare_digest(provided, expected)
+
+    def require_admin(self) -> bool:
+        if self.admin_authorized():
+            return True
+        self.send_json({"error": "后台接口未授权。"}, HTTPStatus.UNAUTHORIZED)
+        return False
+
+    def public_base_url(self) -> str:
+        configured = os.environ.get("PUBLIC_BASE_URL", "").strip().rstrip("/")
+        if configured:
+            return configured
+        host = self.headers.get("X-Forwarded-Host") or self.headers.get("Host") or "127.0.0.1:4173"
+        proto = self.headers.get("X-Forwarded-Proto") or ("https" if host.endswith("taptap.xin") else "http")
+        return f"{proto}://{host}".rstrip("/")
 
     def current_user(self) -> sqlite3.Row | None:
         token = self.session_token()
@@ -386,7 +446,123 @@ class TapHandler(BaseHTTPRequestHandler):
     def profile_for_user(self, connection: sqlite3.Connection, user_id: int) -> sqlite3.Row | None:
         return connection.execute("SELECT * FROM profiles WHERE user_id = ?", (user_id,)).fetchone()
 
+    def get_health(self) -> None:
+        try:
+            with connect() as connection:
+                user_count = connection.execute("SELECT COUNT(*) AS count FROM users").fetchone()["count"]
+                necklace_count = connection.execute("SELECT COUNT(*) AS count FROM necklaces").fetchone()["count"]
+                bound_count = connection.execute(
+                    "SELECT COUNT(*) AS count FROM necklaces WHERE owner_id IS NOT NULL"
+                ).fetchone()["count"]
+        except sqlite3.Error as error:
+            self.send_json(
+                {
+                    "ok": False,
+                    "version": APP_VERSION,
+                    "database": str(db_path()),
+                    "error": str(error),
+                },
+                HTTPStatus.INTERNAL_SERVER_ERROR,
+            )
+            return
+
+        self.send_json(
+            {
+                "ok": True,
+                "version": APP_VERSION,
+                "database": str(db_path()),
+                "counts": {
+                    "users": user_count,
+                    "necklaces": necklace_count,
+                    "boundNecklaces": bound_count,
+                },
+            }
+        )
+
+    def admin_list_devices(self) -> None:
+        if not self.require_admin():
+            return
+        query = parse_qs(urlparse(self.path).query)
+        limit = clamp_int((query.get("limit") or ["50"])[0], 50, 1, 500)
+        with connect() as connection:
+            rows = connection.execute(
+                """
+                SELECT
+                    n.token,
+                    n.owner_id,
+                    n.bound_at,
+                    u.email,
+                    d.slug,
+                    d.name
+                FROM necklaces n
+                LEFT JOIN users u ON u.id = n.owner_id
+                LEFT JOIN device_profiles d ON d.token = n.token
+                ORDER BY n.bound_at IS NULL DESC, n.bound_at DESC, n.token ASC
+                LIMIT ?
+                """,
+                (limit,),
+            ).fetchall()
+
+        base_url = self.public_base_url()
+        self.send_json(
+            {
+                "devices": [
+                    {
+                        "token": row["token"],
+                        "bound": row["owner_id"] is not None,
+                        "ownerEmail": row["email"] or "",
+                        "profileName": row["name"] or "",
+                        "profileSlug": row["slug"] or "",
+                        "boundAt": row["bound_at"],
+                        "publicUrl": f"{base_url}/tap/{row['token']}",
+                    }
+                    for row in rows
+                ]
+            }
+        )
+
+    def admin_create_devices(self) -> None:
+        if not self.require_admin():
+            return
+        data = self.request_json()
+        if data is None:
+            return
+        count = clamp_int(data.get("count"), 1, 1, 500)
+        prefix = clean_token(str(data.get("prefix", ""))).upper()
+        size = clamp_int(data.get("size"), 8, 6, 16)
+        created: list[str] = []
+
+        with connect() as connection:
+            while len(created) < count:
+                token = generated_token(prefix, size)
+                try:
+                    connection.execute(
+                        "INSERT INTO necklaces(token, owner_id, bound_at) VALUES (?, NULL, NULL)",
+                        (token,),
+                    )
+                except sqlite3.IntegrityError:
+                    continue
+                created.append(token)
+
+        base_url = self.public_base_url()
+        self.send_json(
+            {
+                "created": [
+                    {
+                        "token": token,
+                        "publicUrl": f"{base_url}/tap/{token}",
+                    }
+                    for token in created
+                ]
+            },
+            HTTPStatus.CREATED,
+        )
+
     def get_tap(self, token: str) -> None:
+        token = clean_token(token)
+        if not token:
+            self.send_json({"error": "设备编号无效。"}, HTTPStatus.BAD_REQUEST)
+            return
         with connect() as connection:
             necklace = connection.execute("SELECT * FROM necklaces WHERE token = ?", (token,)).fetchone()
             if necklace is None:
@@ -459,11 +635,13 @@ class TapHandler(BaseHTTPRequestHandler):
         }
 
     def register(self) -> None:
-        data = self.read_json()
+        data = self.request_json()
+        if data is None:
+            return
         email = str(data.get("email", "")).strip().lower()
         password = str(data.get("password", ""))
         name = str(data.get("name", "")).strip()[:28]
-        token = str(data.get("token", "")).strip()
+        token = clean_token(str(data.get("token", "")))
         if "@" not in email or len(password) < 6 or not name:
             self.send_json({"error": "请填写昵称、邮箱和至少 6 位密码。"}, HTTPStatus.BAD_REQUEST)
             return
@@ -497,10 +675,12 @@ class TapHandler(BaseHTTPRequestHandler):
             self.cookie_header(session),
         )
     def login(self) -> None:
-        data = self.read_json()
+        data = self.request_json()
+        if data is None:
+            return
         email = str(data.get("email", "")).strip().lower()
         password = str(data.get("password", ""))
-        token = str(data.get("token", "")).strip()
+        token = clean_token(str(data.get("token", "")))
         with connect() as connection:
             user = connection.execute("SELECT * FROM users WHERE email = ?", (email,)).fetchone()
             if user is None or not verify_password(password, user["password_hash"]):
@@ -534,9 +714,11 @@ class TapHandler(BaseHTTPRequestHandler):
         if user is None:
             self.send_json({"error": "请先登录。"}, HTTPStatus.UNAUTHORIZED)
             return
-        data = self.read_json()
+        data = self.request_json()
+        if data is None:
+            return
         tags = [str(tag).strip()[:18] for tag in data.get("tags", []) if str(tag).strip()][:6]
-        token = str(data.get("token", "")).strip()
+        token = clean_token(str(data.get("token", "")))
         if not token:
             self.send_json({"error": "缺少设备编号。"}, HTTPStatus.BAD_REQUEST)
             return
