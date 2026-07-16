@@ -34,11 +34,11 @@ const fallbackAvatar =
 const DEFAULT_TOKEN = "123";
 
 const SOCIAL_PLATFORM_META = [
-  { key: "wechat", label: "微信 / WeChat", subtitle: "好友码已上传", accent: "wechat" },
+  { key: "wechat", label: "微信 / WeChat", subtitle: "好友码 / 可复制微信号", accent: "wechat" },
   { key: "douyin", label: "抖音 / Douyin", subtitle: "点击直达主页", accent: "douyin" },
   { key: "instagram", label: "Instagram", subtitle: "点击直达主页", accent: "instagram" },
   { key: "xiaohongshu", label: "小红书 / Xiaohongshu", subtitle: "点击直达主页", accent: "xiaohongshu" },
-  { key: "twitter", label: "Twitter / X", subtitle: "点击直达主页", accent: "twitter" },
+  { key: "twitter", label: "X / Twitter", subtitle: "点击直达主页", accent: "twitter" },
 ];
 
 const PLATFORM_ICON_MARKUP = {
@@ -367,7 +367,7 @@ async function saveProfile(event) {
   if (!result.ok) return setStatus("#editor-status", result.error);
   state.me = result.me;
   updateSessionUi();
-  hydrateEditor(result.me.profile);
+  hydrateEditor(profileForSelectedDevice());
   renderDashboard();
   setStatus("#editor-status", "主页已保存。别人再碰这条项链，会看到最新内容。");
 }
@@ -398,6 +398,8 @@ function renderPublic(profile, token = "") {
   document.querySelector("#public-bio").textContent = profile.bio || "Be real. Connect real.";
   document.querySelector("#public-wechat-id").textContent = profile.wechat || "未填写";
   document.querySelector("#public-token").textContent = displayToken;
+  const wechatLine = document.querySelector(".wechat-line");
+  if (wechatLine) wechatLine.hidden = !profile.wechat;
 
   const avatar = document.querySelector("#public-avatar");
   avatar.src = profile.avatar || fallbackAvatar;
@@ -421,10 +423,11 @@ function renderPublic(profile, token = "") {
       const isWechat = meta.key === "wechat";
       const platformUrl = isWechat ? "" : profile[meta.key];
       const active = (isWechat && hasWechat) || Boolean(platformUrl);
+      if (!active) continue;
 
-      const row = document.createElement(active ? "button" : "div");
-      row.className = `platform-row ${meta.key}${active ? " is-active" : " is-disabled"}`;
-      if (active && row.tagName === "BUTTON") row.type = "button";
+      const row = document.createElement("button");
+      row.className = `platform-row ${meta.key} is-active`;
+      row.type = "button";
 
       const icon = document.createElement("span");
       icon.className = "platform-icon";
@@ -436,17 +439,15 @@ function renderPublic(profile, token = "") {
       title.textContent = meta.label;
       const subtitle = document.createElement("span");
       if (isWechat) {
-        subtitle.textContent = hasWechat ? "好友码 / 可复制微信号" : "等待完善";
-      } else if (platformUrl) {
         subtitle.textContent = meta.subtitle;
       } else {
-        subtitle.textContent = "等待完善";
+        subtitle.textContent = meta.subtitle;
       }
       metaWrap.append(title, subtitle);
 
       const chevron = document.createElement("span");
       chevron.className = "platform-chevron";
-      chevron.textContent = active ? "›" : "·";
+      chevron.textContent = "›";
 
       row.append(icon, metaWrap, chevron);
 
@@ -585,7 +586,7 @@ async function logout() {
 
 function updateSessionUi() {
   document.querySelector("#logout-button").hidden = !state.me;
-  document.querySelector("#account-link").textContent = state.me ? "我的设备" : "登录 / 管理后台";
+  document.querySelector("#account-link").textContent = state.me ? "我的设备" : "登录";
 }
 
 function tokenFromPath() {

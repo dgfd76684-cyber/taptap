@@ -249,6 +249,10 @@ button {
   gap: 10px;
 }
 
+.public-menu-button {
+  display: none;
+}
+
 .top-actions a,
 .quiet-button,
 .quiet-link {
@@ -1938,4 +1942,664 @@ button:disabled {
   .wechat-line {
     padding: 14px 15px;
   }
+}
+
+/* NEXTOUCH premium mobile redesign layer */
+:root {
+  --lux-bg: #030303;
+  --lux-surface: rgba(10, 10, 10, 0.74);
+  --lux-surface-strong: rgba(8, 8, 8, 0.9);
+  --lux-line: rgba(255, 255, 255, 0.14);
+  --lux-line-soft: rgba(255, 255, 255, 0.08);
+  --lux-ink: #f4f2ec;
+  --lux-muted: rgba(244, 242, 236, 0.64);
+  --lux-dim: rgba(244, 242, 236, 0.42);
+  --lux-gold: #e4c987;
+  --lux-blue: #7fb7ff;
+}
+
+html {
+  background: #030303;
+}
+
+body {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 50% -8%, rgba(255, 255, 255, 0.12), transparent 30%),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.76)),
+    url("/assets/nextouch-marble-user.png") center top / cover fixed,
+    #030303;
+}
+
+body::before {
+  opacity: 0;
+}
+
+body::after {
+  inset: 0;
+  background:
+    linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.28) 44%, rgba(0, 0, 0, 0.72) 100%),
+    radial-gradient(circle at 18% 16%, rgba(255, 255, 255, 0.045), transparent 28%),
+    radial-gradient(circle at 84% 6%, rgba(228, 201, 135, 0.045), transparent 24%);
+  filter: none;
+  opacity: 1;
+  mix-blend-mode: normal;
+}
+
+.shell {
+  position: relative;
+  z-index: 1;
+  width: min(1120px, calc(100% - 24px));
+  padding-top: 20px;
+}
+
+.topbar {
+  margin: 0 auto 22px;
+  max-width: 1040px;
+}
+
+.brand-mark {
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.02)),
+    rgba(255, 255, 255, 0.04);
+}
+
+.brand-copy strong {
+  font-size: 1rem;
+  letter-spacing: 0.09em;
+}
+
+.brand-copy small {
+  color: rgba(244, 242, 236, 0.72);
+}
+
+.top-actions a,
+.quiet-button,
+.quiet-link {
+  border-color: var(--lux-line-soft);
+  background: rgba(255, 255, 255, 0.035);
+  color: var(--lux-ink);
+}
+
+body[data-view="public"] .shell {
+  width: min(430px, calc(100% - 20px));
+  padding-top: 14px;
+}
+
+body[data-view="public"] .topbar {
+  margin-bottom: 8px;
+}
+
+body[data-view="public"] .top-actions {
+  display: none;
+}
+
+body[data-view="public"] .public-menu-button {
+  display: grid;
+  width: 52px;
+  height: 52px;
+  align-content: center;
+  justify-items: center;
+  gap: 5px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 50%;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02)),
+    rgba(0, 0, 0, 0.42);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 14px 34px rgba(0, 0, 0, 0.32);
+  text-decoration: none;
+  backdrop-filter: blur(14px);
+}
+
+body[data-view="public"] .public-menu-button span {
+  display: block;
+  width: 20px;
+  height: 2px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.84);
+}
+
+body[data-view="public"] .brand-mark {
+  width: 42px;
+  height: 42px;
+}
+
+body[data-view="public"] .brand-copy strong {
+  font-size: 0.95rem;
+}
+
+body[data-view="public"] .brand-copy small {
+  font-size: 0.72rem;
+}
+
+.public-view {
+  min-height: auto;
+  padding: 0 0 22px;
+}
+
+.profile-card {
+  width: min(100%, 410px);
+  min-height: calc(100vh - 96px);
+  border-radius: 34px;
+  overflow: hidden;
+  border-color: rgba(255, 255, 255, 0.16);
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.16), rgba(0, 0, 0, 0.58)),
+    url("/assets/nextouch-marble-user.png") center top / cover no-repeat,
+    #050505;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 36px 90px rgba(0, 0, 0, 0.58);
+}
+
+.profile-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 50% 12%, rgba(255, 255, 255, 0.08), transparent 22%),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.08), rgba(0, 0, 0, 0.72) 72%, rgba(0, 0, 0, 0.94));
+  z-index: 0;
+}
+
+.profile-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+.profile-cover {
+  min-height: 88px;
+  padding: 14px 22px 0;
+  background: transparent;
+  border: 0;
+}
+
+.profile-cover::after {
+  display: none;
+}
+
+.cover-topline {
+  opacity: 0.6;
+}
+
+.cover-status {
+  top: 20px;
+  right: 22px;
+  bottom: auto;
+  min-height: 32px;
+  padding: 0 12px;
+  border-color: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.045);
+  backdrop-filter: blur(12px);
+  font-size: 0.78rem;
+}
+
+.profile-main {
+  padding: 0 22px 24px;
+}
+
+.avatar {
+  width: 118px;
+  height: 118px;
+  margin: -24px auto 16px;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow:
+    0 0 0 6px rgba(0, 0, 0, 0.34),
+    0 22px 44px rgba(0, 0, 0, 0.58);
+}
+
+.profile-main h1 {
+  margin-bottom: 6px;
+  font-size: clamp(2rem, 9.5vw, 2.95rem);
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.public-id-line {
+  margin-bottom: 4px;
+  color: var(--lux-muted);
+}
+
+.bio {
+  margin-bottom: 9px;
+  color: var(--lux-muted);
+  font-size: 0.9rem;
+}
+
+.nfc-status-chip {
+  min-height: 30px;
+  margin-bottom: 18px;
+  padding: 0 14px;
+  border-color: rgba(127, 183, 255, 0.2);
+  background: rgba(127, 183, 255, 0.08);
+  color: rgba(231, 240, 255, 0.88);
+  font-size: 0.8rem;
+}
+
+.tag-row {
+  display: none;
+}
+
+.platform-list {
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.platform-row {
+  min-height: 58px;
+  border-radius: 999px;
+  border-color: rgba(255, 255, 255, 0.18);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.02)),
+    rgba(0, 0, 0, 0.52);
+  backdrop-filter: blur(14px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 12px 32px rgba(0, 0, 0, 0.24);
+  padding: 9px 12px;
+}
+
+.platform-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+}
+
+.platform-meta {
+  gap: 0;
+}
+
+.platform-meta strong {
+  font-size: 0.98rem;
+  letter-spacing: 0.01em;
+}
+
+.platform-meta span {
+  color: var(--lux-dim);
+  font-size: 0.78rem;
+}
+
+.profile-plaque {
+  min-height: 72px;
+  border-radius: 14px;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.025)),
+    rgba(255, 255, 255, 0.035);
+}
+
+.profile-plaque strong {
+  font-size: 1.25rem;
+}
+
+.wechat-line[hidden] {
+  display: none;
+}
+
+.account-view,
+.bind-view,
+.dashboard-view,
+.editor-view {
+  border-radius: 26px;
+  border-color: rgba(255, 255, 255, 0.12);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.018)),
+    rgba(0, 0, 0, 0.62);
+}
+
+.bind-view {
+  min-height: min(760px, calc(100vh - 96px));
+}
+
+.bind-copy h1,
+.scene-copy h1 {
+  max-width: 10ch;
+  font-size: clamp(2.2rem, 8vw, 4.4rem);
+  line-height: 0.96;
+}
+
+.auth-panel,
+.profile-form,
+.bind-summary,
+.device-card,
+.dashboard-meta {
+  border-radius: 22px;
+  border-color: rgba(255, 255, 255, 0.13);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.065), rgba(255, 255, 255, 0.018)),
+    rgba(8, 8, 8, 0.76);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 28px 70px rgba(0, 0, 0, 0.48);
+}
+
+.segmented {
+  border-color: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.segmented button.is-active,
+.primary-button,
+.primary-link {
+  background: linear-gradient(135deg, #f1dfb0, #c5a05d);
+  color: #14110d;
+}
+
+input,
+textarea {
+  border-color: rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.045);
+}
+
+.dashboard-view {
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.device-card {
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr);
+  align-items: center;
+}
+
+.device-avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+}
+
+.device-token {
+  color: var(--lux-dim);
+}
+
+.device-status {
+  width: fit-content;
+  min-height: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  padding: 3px 10px;
+}
+
+.editor-view {
+  max-width: 980px;
+  margin: 0 auto;
+}
+
+.editor-head h1,
+.dashboard-head h1 {
+  font-size: clamp(2rem, 7vw, 3.6rem);
+}
+
+.profile-form label {
+  color: rgba(244, 242, 236, 0.74);
+}
+
+.avatar-upload {
+  background:
+    radial-gradient(circle at 18% 20%, rgba(255, 255, 255, 0.06), transparent 28%),
+    rgba(255, 255, 255, 0.035);
+}
+
+.editor-avatar-preview {
+  width: 104px;
+  height: 104px;
+}
+
+@media (max-width: 760px) {
+  .shell {
+    width: min(100% - 18px, 430px);
+    padding-top: 12px;
+  }
+
+  .topbar {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .top-actions {
+    flex-direction: row;
+  }
+
+  .top-actions a,
+  .quiet-button,
+  .quiet-link {
+    min-height: 40px;
+    padding: 0 13px;
+    font-size: 0.9rem;
+  }
+
+  .account-view,
+  .bind-view,
+  .dashboard-view,
+  .editor-view {
+    padding: 18px;
+    border-radius: 24px;
+  }
+
+  .account-view,
+  .bind-view {
+    gap: 16px;
+  }
+
+  .account-view .scene-copy,
+  .bind-view .bind-copy {
+    order: 0;
+  }
+
+  .account-view .auth-panel,
+  .bind-view .auth-panel {
+    order: 1;
+  }
+
+  .showcase-grid {
+    display: none;
+  }
+
+  .bind-copy h1,
+  .scene-copy h1 {
+    max-width: 9ch;
+    font-size: clamp(2.3rem, 12vw, 3.4rem);
+  }
+
+  .scene-lead {
+    font-size: 0.96rem;
+  }
+
+  .flow-pill-row {
+    display: none;
+  }
+
+  .profile-card {
+    width: 100%;
+    min-height: calc(100vh - 82px);
+    border-radius: 30px;
+  }
+
+  .profile-main {
+    padding-inline: 18px;
+  }
+
+  .profile-cover {
+    min-height: 82px;
+    padding-inline: 18px;
+  }
+
+  .avatar {
+    width: 108px;
+    height: 108px;
+    margin-top: -22px;
+  }
+
+  .platform-row {
+    min-height: 56px;
+  }
+
+  .profile-plaque {
+    min-height: 64px;
+  }
+
+  .editor-layout {
+    gap: 14px;
+  }
+
+  .device-card {
+    grid-template-columns: 62px minmax(0, 1fr);
+    gap: 14px;
+  }
+
+  .device-avatar {
+    width: 62px;
+    height: 62px;
+  }
+}
+
+/* Public page: full-bleed website, not a phone/card mockup */
+body[data-view="public"] {
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.22), rgba(0, 0, 0, 0.82)),
+    url("/assets/nextouch-marble-user.png") center top / cover fixed,
+    #030303;
+}
+
+body[data-view="public"] .shell {
+  width: 100%;
+  max-width: none;
+  padding: 0;
+}
+
+body[data-view="public"] .topbar {
+  width: min(100% - 40px, 760px);
+  max-width: none;
+  margin: 0 auto;
+  padding: 20px 0 14px;
+}
+
+body[data-view="public"] .brand {
+  gap: 10px;
+}
+
+body[data-view="public"] .brand-mark {
+  width: 44px;
+  height: 44px;
+  border-radius: 13px;
+}
+
+body[data-view="public"] .brand-copy strong {
+  font-size: 1rem;
+}
+
+body[data-view="public"] .brand-copy small {
+  font-size: 0.72rem;
+}
+
+body[data-view="public"] .public-view {
+  width: 100%;
+  min-height: calc(100vh - 78px);
+  padding: 0 0 44px;
+  place-items: start center;
+}
+
+body[data-view="public"] .profile-card {
+  width: min(100%, 760px);
+  min-height: auto;
+  border: 0;
+  border-radius: 0;
+  overflow: visible;
+  background: transparent;
+  box-shadow: none;
+}
+
+body[data-view="public"] .profile-card::before,
+body[data-view="public"] .profile-card::after {
+  display: none;
+}
+
+body[data-view="public"] .profile-cover {
+  display: none;
+}
+
+body[data-view="public"] .profile-main {
+  width: min(100% - 48px, 520px);
+  margin: 0 auto;
+  padding: 38px 0 0;
+  background: transparent !important;
+}
+
+body[data-view="public"] .avatar {
+  margin: 0 auto 18px;
+}
+
+body[data-view="public"] .profile-main h1 {
+  margin-bottom: 6px;
+}
+
+body[data-view="public"] .bio {
+  max-width: 26ch;
+  margin-bottom: 12px;
+}
+
+body[data-view="public"] .nfc-status-chip {
+  margin-bottom: 22px;
+}
+
+body[data-view="public"] .platform-list {
+  gap: 14px;
+}
+
+body[data-view="public"] .platform-row {
+  min-height: 66px;
+  padding: 10px 18px;
+  border-color: rgba(255, 255, 255, 0.28);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.065), rgba(255, 255, 255, 0.018)),
+    rgba(0, 0, 0, 0.56);
+}
+
+body[data-view="public"] .platform-meta strong {
+  font-size: 1.08rem;
+}
+
+body[data-view="public"] .platform-meta span {
+  display: none;
+}
+
+body[data-view="public"] .profile-plaque,
+body[data-view="public"] .wechat-line {
+  display: none;
+}
+
+@media (max-width: 760px) {
+  body[data-view="public"] .topbar {
+    width: calc(100% - 32px);
+    padding-top: 16px;
+  }
+
+  body[data-view="public"] .profile-main {
+    width: min(100% - 56px, 430px);
+    padding-top: 34px;
+  }
+
+  body[data-view="public"] .platform-row {
+    min-height: 62px;
+  }
+}
+
+body[data-view="public"] main,
+body[data-view="public"] .public-view,
+body[data-view="public"] .profile-card,
+body[data-view="public"] .profile-main {
+  background: transparent !important;
+  box-shadow: none;
+}
+
+body[data-view="public"] .profile-main::before,
+body[data-view="public"] .profile-main::after,
+body[data-view="public"] .public-view::before,
+body[data-view="public"] .public-view::after {
+  display: none !important;
 }
