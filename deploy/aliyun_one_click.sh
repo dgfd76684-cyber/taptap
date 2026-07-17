@@ -5,6 +5,7 @@ APP_DIR="${APP_DIR:-/opt/nextouch}"
 DATA_DIR="${DATA_DIR:-/var/lib/nextouch}"
 REPO_URL="${REPO_URL:-https://github.com/dgfd76684-cyber/taptap.git}"
 PORT="${PORT:-80}"
+PYTHON_BIN="${PYTHON_BIN:-}"
 
 if [[ "${EUID}" -ne 0 ]]; then
   echo "Please run as root, for example: curl -fsSL ... | sudo bash"
@@ -18,9 +19,9 @@ echo "Port: ${PORT}"
 
 install_packages() {
   if command -v dnf >/dev/null 2>&1; then
-    dnf install -y git python3 curl
+    dnf install -y git curl python3.11
   elif command -v yum >/dev/null 2>&1; then
-    yum install -y git python3 curl
+    yum install -y git curl python3.11
   elif command -v apt-get >/dev/null 2>&1; then
     apt-get update
     apt-get install -y git python3 curl
@@ -31,6 +32,21 @@ install_packages() {
 }
 
 install_packages
+
+if [[ -z "${PYTHON_BIN}" ]]; then
+  if command -v python3.11 >/dev/null 2>&1; then
+    PYTHON_BIN="$(command -v python3.11)"
+  elif command -v python3.10 >/dev/null 2>&1; then
+    PYTHON_BIN="$(command -v python3.10)"
+  elif command -v python3.9 >/dev/null 2>&1; then
+    PYTHON_BIN="$(command -v python3.9)"
+  elif command -v python3 >/dev/null 2>&1; then
+    PYTHON_BIN="$(command -v python3)"
+  else
+    echo "No usable Python 3 interpreter found."
+    exit 1
+  fi
+fi
 
 echo "== Pull project =="
 rm -rf /tmp/nextouch-src
@@ -57,7 +73,7 @@ WorkingDirectory=${APP_DIR}
 Environment=HOST=0.0.0.0
 Environment=PORT=${PORT}
 Environment=DATABASE_PATH=${DATA_DIR}/tap_necklace.sqlite3
-ExecStart=/usr/bin/python3 ${APP_DIR}/server.py
+ExecStart=${PYTHON_BIN} ${APP_DIR}/server.py
 Restart=always
 RestartSec=3
 
